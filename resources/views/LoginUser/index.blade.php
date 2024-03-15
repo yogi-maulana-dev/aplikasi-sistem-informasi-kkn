@@ -145,18 +145,21 @@
                 @enderror
             </div>
         </div>
-        <div class="col-lg-12 d-flex justify-content-between">
+        {{-- <div class="col-lg-12 d-flex justify-content-between">
             <div class="form-check mb-3">
                 <input type="checkbox" class="form-check-input" id="customCheck1">
                 <label class="form-check-label" for="customCheck1">Remember Me</label>
             </div>
             <a href="recoverpw.html">Lupa Password?</a>
-        </div>
+        </div> --}}
     </div>
-    <div class="d-flex justify-content-center">
+    <div class="mt-2 text-center">
         <button type="submit" class="btn btn-primary">Masuk</button>
+        <a href="" class="btn btn-secondary">Daftar</a>
     </div>
 </form>
+
+
 
                                 </div>
                             </div>

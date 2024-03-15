@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers\superadmin;
 
-use App\Http\Controllers\Controller;
+use App\Models\Dpl;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class DplController extends Controller
 {
@@ -13,6 +14,8 @@ class DplController extends Controller
     public function index()
     {
         //
+        $alldpl= Dpl::all();
+        return view('SuperAdmin.dpl', compact('alldpl'));
     }
 
     /**

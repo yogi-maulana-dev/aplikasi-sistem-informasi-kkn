@@ -15,28 +15,31 @@ class DashboardContoller extends Controller
     /**
      * Display a listing of the resource.
      */
-     public function index()
-{
-
-    $userId = Auth::guard('web')->id();
-    $user = Mahasiswa::find($userId);
-
-    if (!$user) {
-        // Handle the case where the user is not found
-        return redirect()->route('login')->with('warning', 'User not found.');
+    public function index(Request $request)
+    {
+        $userId = Auth::guard('web')->id();
+        $user = Mahasiswa::find($userId);
+    
+        if (!$user) {
+            // Handle the case where the user is not found
+            return redirect()->route('login')->with('warning', 'User tidak ditemukan.');
+        }
+    
+    
+    
+        // Check if the user has completed biodata
+        if ($this->isBiodataComplete($user)) {
+            // Access the related data
+            // Other user details are available as well
+            // Pass the data to the view
+            return view('Mahasiswa.dashboard', ['judul' => 'Halaman Dashboard', 'user' => $user]);
+        } else {
+            // Redirect to a page for completing biodata
+            // return redirect()->route('edit-profil')->with('warning', 'Lengkapi biodata Anda untuk mengakses fitur lain.');
+            return redirect()->route('pengumuman')->with('warning', 'Data anda sedang di verifikasi admin, tunggu sampai ada pengumuman akun anda akan aktif.');
+        }
     }
-
-    // Check if the user has completed biodata
-    if ($this->isBiodataComplete($user)) {
-        // Access the related data
-        // Other user details are available as well
-        // Pass the data to the view
-        return view('Mahasiswa.dashboard'  ,['judul' => 'Halaman Dashboard', 'user' => $user]);
-    } else {
-        // Redirect to a page for completing biodata
-        return redirect()->route('edit-profil')->with('warning', 'Lengkapi biodata Anda untuk mengakses lain.');
-    }
-}
+    
 
 protected function isBiodataComplete($user)
 {
@@ -52,6 +55,10 @@ protected function isBiodataComplete($user)
         && !empty($user->gambar)
         && !is_null($user->password) // Make sure password is not null or empty if it should not be
         && $user->aktif == 1;
+}
+
+public function pengumuman(){
+    return view('Pengumuman.index');
 }
 
 
@@ -85,10 +92,11 @@ protected function isBiodataComplete($user)
     public function edit()
     {
         
-        $prodix = Prodi::all();
-        $fakultasx = Falkultas::all();
+        // $prodix = Prodi::all();
+        // $fakultasx = Falkultas::all();
 
-        return view('Mahasiswa.profil-edit',compact('prodix','fakultasx'), ['judul' => 'Edit Data Profil']);
+        // return view('Mahasiswa.profil-edit',compact('prodix','fakultasx'), ['judul' => 'Edit Data Profil']);
+        return view('Pengumuman.index', ['judul' => 'Edit Data Profil']);
     }
 
     /**

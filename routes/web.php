@@ -1,15 +1,16 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\superadmin\DplController;
 use App\Http\Controllers\Mahasiswa\LoginController;
 use App\Http\Controllers\SuperAdmin\DosenController;
 use App\Http\Controllers\SuperAdmin\LokasiController;
 use App\Http\Controllers\Mahasiswa\DashboardContoller;
+use App\Http\Controllers\SuperAdmin\KelompokController;
 use App\Http\Controllers\SuperAdmin\MahasiswaController;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 use App\Http\Controllers\SuperAdmin\LoginSuperAdminController;
 use App\Http\Controllers\SuperAdmin\DashboardSuperAdminController;
-use App\Http\Controllers\SuperAdmin\KelompokController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,14 +25,18 @@ use App\Http\Controllers\SuperAdmin\KelompokController;
 
 Route::middleware(['guest:web', 'preventBackHistory'])->group(function () {
     Route::get('/', [LoginController::class, 'index'])->name('login');
+    Route::get('/pendaftaraan', [LoginController::class, 'pendaftaraan'])->name('pendaftaraan');
     Route::post('/loginaction', [LoginController::class, 'loginaction'])->name('loginaction');
+    Route::post('/pendaftaraan/simpan', [LoginController::class, 'store'])->name('pendaftaraan.simpan');
+    Route::get('/pengumuman', [DashboardContoller::class, 'pengumuman'])->name('pengumuman');
     // Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 });
 
 Route::middleware(['auth:web', 'preventBackHistory'])->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
     Route::get('/dashboard', [DashboardContoller::class, 'index'])->name('dashboard');
-    Route::get('/edit-profil', [DashboardContoller::class, 'edit'])->name('edit-profil');
+    Route::get('/pengumuman', [DashboardContoller::class, 'pengumuman'])->name('pengumuman');
+    // Route::get('/edit-profil', [DashboardContoller::class, 'edit'])->name('edit-profil');
     Route::put('/profil-update/{id}', [DashboardContoller::class, 'update'])->name('profil-update');
 });
 
@@ -94,6 +99,8 @@ Route::prefix('superadmin')
 
             Route::get('/kelompok/searchedit', [KelompokController::class, 'searchedit'])->name('kelompok.searchedit');
             Route::delete('/kelompok/{nokelompok}', [KelompokController::class, 'destroy'])->name('kelompok.delete');
+
+            Route::get('/dpl', [DplController::class, 'index'])->name('dpl');
 
         });
     });

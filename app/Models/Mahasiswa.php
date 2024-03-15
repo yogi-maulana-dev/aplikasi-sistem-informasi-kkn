@@ -32,6 +32,7 @@ class Mahasiswa extends Model implements Authenticatable // Implementasi kontrak
         'fakultas',
         'jurusan',
         'gambar',
+        'pembayaran',
         'aktif',
     ];
 

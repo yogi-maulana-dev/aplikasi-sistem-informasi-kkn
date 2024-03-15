@@ -12,6 +12,7 @@
 @yield('dosen')
 @yield('kelompok')
 @yield('kelompok-edit')
+@yield('dpl')
 @yield('tesedit')
 @include('tampilan_superadmin.modal')
 @include('tampilan_superadmin.footer')

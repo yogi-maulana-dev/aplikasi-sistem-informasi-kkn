@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\Mahasiswa;
 
+use App\Models\Prodi;
+use App\Models\Falkultas;
+use App\Models\Mahasiswa;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -20,15 +23,19 @@ class LoginController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-     public function loginAction(Request $request)
+    public function loginAction(Request $request)
 {
     $credentials = $request->validate([
-        'login_identifier' => ['required', 'string', function ($attribute, $value, $fail) {
-            // Check if the input is a valid email or NPM
-            if (!filter_var($value, FILTER_VALIDATE_EMAIL) && !is_numeric($value)) {
-                $fail('The '.$attribute.' must be a valid email or NPM.');
-            }
-        }],
+        'login_identifier' => [
+            'required',
+            'string',
+            function ($attribute, $value, $fail) {
+                // Check if the input is a valid email or NPM
+                if (!filter_var($value, FILTER_VALIDATE_EMAIL) && !is_numeric($value)) {
+                    $fail('The ' . $attribute . ' must be a valid email or NPM.');
+                }
+            },
+        ],
         'password' => 'required',
     ], [
         'login_identifier.required' => 'The email or NPM field is required.',
@@ -39,29 +46,39 @@ class LoginController extends Controller
     // Determine if the login identifier is an email or NPM
     $field = filter_var($credentials['login_identifier'], FILTER_VALIDATE_EMAIL) ? 'email' : (is_numeric($credentials['login_identifier']) ? 'npm' : null);
 
+    $status = 0; // Default status: failed login
+
     if ($field && Auth::guard('web')->attempt([$field => $credentials['login_identifier'], 'password' => $credentials['password']])) {
         $request->session()->regenerate();
-
-        return redirect()->intended(route('dashboard'));
+        $status = 1; // Login successful
     }
 
-    return back()->withInput()->withErrors(['loginError' => 'Login failed! Email, NPM, or password is incorrect.']);
-}
+    // Redirect with status
+    return redirect()->route('dashboard')->with(['aktif' => $status]);
 
-
+        return back()
+            ->withInput()
+            ->withErrors(['loginError' => 'Login failed! Email, NPM, or password is incorrect.']);
+    }
 
     public function logout()
     {
         Auth::logout();
-        request()
-            ->session()
-            ->invalidate();
-        request()
-            ->session()
-            ->regenerateToken();
+        request()->session()->invalidate();
+        request()->session()->regenerateToken();
         return redirect(route('login'));
     }
 
+    public function pengumuman(){
+        return view('Pengumuman.index');
+    }
+
+    public function pendaftaraan()
+    {
+        $prodix = Prodi::all();
+        $fakultasx = Falkultas::all();
+        return view('DaftarUser.index', compact('prodix','fakultasx'));
+    }
 
     /**
      * Show the form for creating a new resource.
@@ -77,6 +94,83 @@ class LoginController extends Controller
     public function store(Request $request)
     {
         //
+           // Validasi data
+           $validatedData = $request->validate([
+            'npm' => 'required|string|max:255',
+            'namalengkap' => 'required|string|max:255',
+            'email' => 'required|email|unique:mahasiswas,email',
+            'jk' => 'required|string|max:255',
+            'nohp' => 'required|string|max:255',
+            'gambar' => 'required|image|max:2048', // Ubah sesuai kebutuhan Anda
+            'gambarbayar' => 'required|image|max:2048', // Ubah sesuai kebutuhan Anda
+            'alamat' => 'required|string|max:255',
+            'fakultas' => 'required|string|max:255',
+            'jurusan' => 'required|string|max:255',
+            'sizebaju' => 'required|string|max:255',
+            'password' => 'required|string|min:8|confirmed',
+            'password_confirmation' => 'required|string|min:8',
+        ],
+        [
+            'npm.required' => 'Nomor Pokok Mahasiswa wajib diisi',
+            'npm.unique' => 'Nomor Pokok Mahasiswa sudah ada dalam database',
+            'namalengkap.required' => 'Nama lengkap wajib diisi',
+            'email.required' => 'Alamat email wajib diisi',
+            'email.email' => 'Format email tidak valid',
+            'email.unique' => 'Alamat email sudah digunakan',
+            'jk.required' => 'Jenis kelamin wajib dipilih',
+            'jk.in' => 'Pilih jenis kelamin yang sesuai',
+            'fakultas.required' => 'Fakultas wajib dipilih',
+            'fakultas.in' => 'Pilih fakultas yang sesuai',
+            'jurusan.required' => 'Jurusan wajib dipilih',
+            'jurusan.in' => 'Pilih Jurusan yang sesuai',
+            'nohp.required' => 'Nomor handphone wajib diisi',
+            'nohp.numeric' => 'Nomor handphone harus berupa angka',
+            'alamat.required' => 'Alamat wajib diisi',
+            'fakultas.required' => 'Fakultas wajib dipilih',
+            'jurusan.required' => 'Jurusan wajib dipilih',
+            'gambar.image' => 'File harus berupa Foto',
+            'gambar.mimes' => 'Format Foto harus jpeg, png, jpg, atau gif',
+            'gambar.max' => 'Ukuran foto maksimal 2MB',
+            'gambarbayar.image' => 'File harus berupa Bukti Pembayaran',
+            'gambarbayar.mimes' => 'Format Bukti Pembayaran harus jpeg, png, jpg, atau gif',
+            'gambarbayar.max' => 'Ukuran Bukti Pembayaran maksimal 2MB',
+        ],);
+
+        // Menyimpan data ke dalam database
+        $user = new Mahasiswa();
+        $user->npm = $request->npm;
+        $user->namalengkap = $request->namalengkap;
+        $user->email = $request->email;
+        $user->jk = $request->jk;
+        $user->nohp = $request->nohp;
+        // Proses upload gambar
+       // Upload gambar (jika ada)
+       if ($request->hasFile('gambar')) {
+        $gambar = $request->file('gambar');
+        $npm = $request->input('npm'); // Mengambil NPM dari input form
+        $nama_gambar = $npm . '_' . time() . '.' . $gambar->getClientOriginalExtension(); // Menambahkan NPM ke nama gambar
+        $lokasi = public_path('uploads/mahasiswa/foto');
+        $gambar->move($lokasi, $nama_gambar);
+        $user->gambar = 'uploads/mahasiswa/foto/' . $nama_gambar;
+    }
+       if ($request->hasFile('gambarbayar')) {
+        $gambarbayar = $request->file('gambarbayar');
+        $npm = $request->input('npm'); // Mengambil NPM dari input form
+        $nama_gambarbayar = $npm . '_' . time() . '.' . $gambarbayar->getClientOriginalExtension(); // Menambahkan NPM ke nama gambarbayar
+        $lokasi = public_path('uploads/mahasiswa/bukti');
+        $gambarbayar->move($lokasi, $nama_gambarbayar);
+        $user->gambarbayar = 'uploads/mahasiswa/bukti/' . $nama_gambarbayar;
+    }
+       
+        $user->alamat = $request->alamat;
+        $user->fakultas = $request->fakultas;
+        $user->jurusan = $request->jurusan;
+        $user->sizebaju = $request->sizebaju;
+        $user->password = bcrypt($request->password);
+        $user->pembayaran = '1';
+        $user->save();
+
+        return redirect()->back()->with('success', 'Data berhasil disimpan!');
     }
 
     /**
@@ -110,6 +204,4 @@ class LoginController extends Controller
     {
         //
     }
-
-
 }
