@@ -6,6 +6,7 @@ use App\Http\Controllers\Mahasiswa\LoginController;
 use App\Http\Controllers\SuperAdmin\DosenController;
 use App\Http\Controllers\SuperAdmin\LokasiController;
 use App\Http\Controllers\Mahasiswa\DashboardContoller;
+use App\Http\Controllers\SuperAdmin\BuktiPembayaranController;
 use App\Http\Controllers\SuperAdmin\KelompokController;
 use App\Http\Controllers\SuperAdmin\MahasiswaController;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
@@ -59,7 +60,8 @@ Route::prefix('superadmin')
             Route::get('/mahasiswa/{id}/edit', [MahasiswaController::class, 'edit'])->name('mahasiswa.edit');
 
             Route::delete('/mahasiswa/{id}', [MahasiswaController::class, 'destroy'])->name('mahasiswa.delete');
-            Route::put('/mahasiswa/{id}', [MahasiswaController::class, 'update'])->name('mahasiswa.update');
+            Route::put('/mahasiswa/{id}', [MahasiswaController::class, 'update'])->name('mahasiswa.update');      
+            Route::get('/cetak-pdf/{id}', [MahasiswaController::class, 'cetakPDF'])->name('cetak.pdf');
 
             Route::get('/dosen', [DosenController::class, 'index'])->name('dosen');
             Route::post('/simpan-dosen', [DosenController::class, 'store'])->name('simpan.dosen');

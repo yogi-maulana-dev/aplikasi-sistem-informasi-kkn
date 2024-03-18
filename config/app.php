@@ -164,6 +164,7 @@ return [
          * Application Service Providers...
          */
         // Provider Lain
+        Barryvdh\DomPDF\ServiceProvider::class,
 AzisHapidin\IndoRegion\IndoRegionServiceProvider::class,
         App\Providers\AppServiceProvider::class,
         App\Providers\AuthServiceProvider::class,
@@ -185,6 +186,7 @@ AzisHapidin\IndoRegion\IndoRegionServiceProvider::class,
 
     'aliases' => Facade::defaultAliases()->merge([
         // 'Example' => App\Facades\Example::class,
+        'PDF' => Barryvdh\DomPDF\Facade::class,
     ])->toArray(),
 
 ];

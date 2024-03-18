@@ -4,10 +4,12 @@ namespace App\Http\Controllers\SuperAdmin;
 
 use App\Models\Prodi;
 use App\Models\Falkultas;
+use App\Models\Mahasiswa;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\Mahasiswa;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use PDF;
 
 class MahasiswaController extends Controller
 {
@@ -42,15 +44,17 @@ class MahasiswaController extends Controller
         $validator = Validator::make(
             $request->all(),
             [
-                'npm' => 'required|unique:mahasiswas,npm',
-                'namalengkap' => 'required',
+                'npm' => 'required|string|max:255|unique:mahasiswas,npm,' . $request->input('npm'),
+                'namalengkap' => 'required|string|max:255',
                 'email' => 'required|email|unique:mahasiswas,email',
-                'jk' => 'required|in:Laki - Laki,Wanita',
-                'nohp' => 'required|numeric',
-                'alamat' => 'required',
-                'fakultas' => 'required',
-                'jurusan' => 'required',
-                'gambar' => 'image|mimes:jpeg,png,jpg,gif|max:2048', // validasi untuk gambar
+                'jk' => 'required|string|max:255',
+                'nohp' => 'required|string|max:255',
+                'gambar' => 'required|image|max:5120', // Ubah sesuai kebutuhan Anda
+                'gambarbayar' => 'required|image|max:5120', // Ubah sesuai kebutuhan Anda
+                'alamat' => 'required|string|max:255',
+                'fakultas' => 'required|string|max:255',
+                'jurusan' => 'required|string|max:255',
+                'sizebaju' => 'required|string|max:255',
             ],
             [
                 'npm.required' => 'Nomor Pokok Mahasiswa wajib diisi',
@@ -70,9 +74,12 @@ class MahasiswaController extends Controller
                 'alamat.required' => 'Alamat wajib diisi',
                 'fakultas.required' => 'Fakultas wajib dipilih',
                 'jurusan.required' => 'Jurusan wajib dipilih',
-                'gambar.image' => 'File harus berupa gambar',
-                'gambar.mimes' => 'Format gambar harus jpeg, png, jpg, atau gif',
-                'gambar.max' => 'Ukuran gambar maksimal 2MB',
+                'gambar.image' => 'File harus berupa Foto',
+                'gambar.mimes' => 'Format Foto harus jpeg, png, jpg, atau gif',
+                'gambar.max' => 'Ukuran foto maksimal 2MB',
+                'gambarbayar.image' => 'File harus berupa Bukti Pembayaran',
+                'gambarbayar.mimes' => 'Format Bukti Pembayaran harus jpeg, png, jpg, atau gif',
+                'gambarbayar.max' => 'Ukuran Bukti Pembayaran maksimal 2MB',
             ],
         );
 
@@ -89,15 +96,26 @@ class MahasiswaController extends Controller
         $mahasiswa->alamat = $request->input('alamat');
         $mahasiswa->fakultas = $request->input('fakultas');
         $mahasiswa->jurusan = $request->input('jurusan');
+        $mahasiswa->sizebaju = $request->input('sizebaju');
+        $mahasiswa->password = Hash::make($request->input('npm'));
 
         // Upload gambar (jika ada)
         if ($request->hasFile('gambar')) {
             $gambar = $request->file('gambar');
             $npm = $request->input('npm'); // Mengambil NPM dari input form
             $nama_gambar = $npm . '_' . time() . '.' . $gambar->getClientOriginalExtension(); // Menambahkan NPM ke nama gambar
-            $lokasi = public_path('uploads/mahasiswa');
+            $lokasi = public_path('uploads/mahasiswa/foto');
             $gambar->move($lokasi, $nama_gambar);
-            $mahasiswa->gambar = 'uploads/mahasiswa/' . $nama_gambar;
+            $mahasiswa->gambar = 'uploads/mahasiswa/foto/' . $nama_gambar;
+        }
+
+        if ($request->hasFile('gambarbayar')) {
+            $gambarbayar = $request->file('gambarbayar');
+            $npm = $request->input('npm'); // Mengambil NPM dari input form
+            $nama_gambarbayar = $npm . '_' . time() . '.' . $gambarbayar->getClientOriginalExtension(); // Menambahkan NPM ke nama gambarbayar
+            $lokasi = public_path('uploads/mahasiswa/bukti');
+            $gambarbayar->move($lokasi, $nama_gambarbayar);
+            $mahasiswa->gambarbayar = 'uploads/mahasiswa/bukti/' . $nama_gambarbayar;
         }
 
         $mahasiswa->save();
@@ -220,5 +238,15 @@ class MahasiswaController extends Controller
     
         return redirect()->back()->with('success', 'Data mahasiswa berhasil dihapus.');
     }
+
+    public function cetakPDF($id)
+{
+    $mahasiswa = Mahasiswa::findOrFail($id);
+
+    $pdf = PDF::loadView('superadmin.mahasiswa.pdf', compact('mahasiswa'));
+
+    return $pdf->stream('mahasiswa_' . $mahasiswa->namalengkap . '.pdf');
+}
+
     
 }

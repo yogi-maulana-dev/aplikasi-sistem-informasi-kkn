@@ -107,7 +107,9 @@
                                                     <td>{{ $mahasiswa->jenis_kelamin }}</td>
                                                     <td>{{ $mahasiswa->status }}</td>
                                                     <td>
-                                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editMahasiswaModal{{ $mahasiswa->id }}">
+                                                        <button type="button" class="btn btn-primary"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#editMahasiswaModal{{ $mahasiswa->id }}">
                                                             Edit
                                                         </button>
                                                         <form
@@ -119,13 +121,13 @@
                                                                 onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">Hapus</button>
                                                         </form>
 
-
+                                                        <button type="button" class="btn btn-primary cetak-btn" data-id="{{ $mahasiswa->id }}">
+                                                            Cetak Data
+                                                        </button>
                                                     </td>
                                                 </tr>
 
-                                           <!-- Modal Edit Mahasiswa -->
-    
-
+                                                <!-- Modal Edit Mahasiswa -->
                                             @endforeach
                                         </tbody>
                                         <tfoot>
@@ -248,9 +250,38 @@
                                                 </span>
                                             @enderror
                                         </div>
+
+                                        <div class="form-group">
+                                            <label class="form-label" for="baju">Ukuran Baju</label>
+                                            <select name="sizebaju"
+                                                class="form-select border-success @error('sizebaju') is-invalid @enderror"
+                                                data-trigger name="sizebaju" id="sizebaju">
+                                                <option {{ old('sizebaju') == '' ? 'selected' : '' }}>Pilih Ukuran Baju
+                                                </option>
+                                                <option value="s" {{ old('sizebaju') == 's' ? 'selected' : '' }}>S
+                                                </option>
+                                                <option value="m" {{ old('sizebaju') == 'm' ? 'selected' : '' }}>M
+                                                </option>
+                                                <option value="l" {{ old('sizebaju') == 'l' ? 'selected' : '' }}>L
+                                                </option>
+                                                <option value="xl" {{ old('sizebaju') == 'xl' ? 'selected' : '' }}>XL
+                                                </option>
+                                                <option value="xxl" {{ old('sizebaju') == 'xxl' ? 'selected' : '' }}>
+                                                    XXL</option>
+                                                <option value="xxxl" {{ old('sizebaju') == 'xxxl' ? 'selected' : '' }}>
+                                                    XXXL</option>
+                                            </select>
+                                            @error('sizebaju')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>
+
                                     </div>
 
                                     <div class="col-sm-6">
+
                                         <div class="form-group">
                                             <label for="gambar" class="form-label custom-file-input">Upload Foto</label>
                                             <input
@@ -262,6 +293,8 @@
                                                 </span>
                                             @enderror
                                         </div>
+
+
 
                                         <div class="form-group">
                                             <label class="form-label" for="alamat">Alamat:</label>
@@ -280,7 +313,9 @@
                                                 data-trigger id="fakultas">
                                                 <option value="">Pilih</option>
                                                 @foreach ($fakultasx as $fakultasItem)
-                                                    <option value="{{ $fakultasItem->nama }}">{{ $fakultasItem->nama }}
+                                                    <option value="{{ $fakultasItem->nama }}"
+                                                        {{ old('fakultas') == $fakultasItem->nama ? 'selected' : '' }}>
+                                                        {{ $fakultasItem->nama }}
                                                     </option>
                                                 @endforeach
                                             </select>
@@ -299,7 +334,9 @@
                                                 <option value="">Pilih Jurusan</option>
                                                 {{-- Loop untuk menampilkan opsi prodi --}}
                                                 @foreach ($prodix as $prodiItem)
-                                                    <option value="{{ $prodiItem->nama }}">{{ $prodiItem->nama }}
+                                                    <option value="{{ $prodiItem->nama }}"
+                                                        {{ old('jurusan') == $prodiItem->nama ? 'selected' : '' }}>
+                                                        {{ $prodiItem->nama }}
                                                     </option>
                                                 @endforeach
                                             </select>
@@ -309,6 +346,22 @@
                                                 </span>
                                             @enderror
                                         </div>
+
+
+                                        <div class="form-group">
+                                            <label for="gambarbayar" class="form-label custom-file-input">Upload Bukti
+                                                Pembayaran</label>
+                                            <input
+                                                class="form-control border-success @error('gambarbayar') is-invalid @enderror"
+                                                name="gambarbayar" type="file" id="gambarbayar">
+                                            @error('gambarbayar')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>
+
+
                                     </div>
 
                                     <div class="col-sm-12 text-center">
@@ -323,14 +376,18 @@
 
 
                     <!-- Modal Edit Mahasiswa -->
-                    <div class="modal fade" id="editMahasiswaModal{{ $mahasiswa->id }}" tabindex="-1" aria-labelledby="editMahasiswaModalLabel{{ $mahasiswa->id }}" aria-hidden="true">
+                    <div class="modal fade" id="editMahasiswaModal{{ $mahasiswa->id }}" tabindex="-1"
+                        aria-labelledby="editMahasiswaModalLabel{{ $mahasiswa->id }}" aria-hidden="true">
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="editMahasiswaModalLabel{{ $mahasiswa->id }}">Edit Mahasiswa</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    <h5 class="modal-title" id="editMahasiswaModalLabel{{ $mahasiswa->id }}">Edit
+                                        Mahasiswa</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
                                 </div>
-                                <form action="{{ route('superadmin.mahasiswa.update', ['id' => $mahasiswa->id]) }}" method="POST"  enctype="multipart/form-data">
+                                <form action="{{ route('superadmin.mahasiswa.update', ['id' => $mahasiswa->id]) }}"
+                                    method="POST" enctype="multipart/form-data">
                                     @csrf
                                     @method('PUT')
                                     <div class="modal-body">
@@ -338,56 +395,72 @@
                                         <div class="mb-3">
                                             <div class="form-group">
                                                 <label for="npm">NPM</label>
-                                                <input type="text" class="form-control border-success" id="npm" name="npm" value="{{ old('npm', $mahasiswa->npm) }}" required>
-                                              </div>
-                                              <div class="form-group">
+                                                <input type="text" class="form-control border-success" id="npm"
+                                                    name="npm" value="{{ old('npm', $mahasiswa->npm) }}" required>
+                                            </div>
+                                            <div class="form-group">
                                                 <label for="namalengkap">Nama Lengkap</label>
-                                                <input type="text" class="form-control border-success" id="namalengkap" name="namalengkap" value="{{ old('namalengkap', $mahasiswa->namalengkap) }}" required>
-                                              </div>
-                                              <div class="form-group">
+                                                <input type="text" class="form-control border-success"
+                                                    id="namalengkap" name="namalengkap"
+                                                    value="{{ old('namalengkap', $mahasiswa->namalengkap) }}" required>
+                                            </div>
+                                            <div class="form-group">
                                                 <label for="email">Email</label>
-                                                <input type="email" class="form-control border-success" id="email" name="email" value="{{ old('email', $mahasiswa->email) }}" required>
-                                              </div>
-                                              <div class="form-group">
+                                                <input type="email" class="form-control border-success" id="email"
+                                                    name="email" value="{{ old('email', $mahasiswa->email) }}"
+                                                    required>
+                                            </div>
+                                            <div class="form-group">
                                                 <label for="jk">Jenis Kelamin</label>
-                                                <select class="form-control border-success" id="jk" name="jk" required>
-                                                  <option value="Laki - Laki" {{ $mahasiswa->jk === 'Laki - Laki' ? 'selected' : '' }}>Laki - Laki</option>
-                                                  <option value="Wanita" {{ $mahasiswa->jk === 'Wanita' ? 'selected' : '' }}>Wanita</option>
+                                                <select class="form-control border-success" id="jk" name="jk"
+                                                    required>
+                                                    <option value="Laki - Laki"
+                                                        {{ $mahasiswa->jk === 'Laki - Laki' ? 'selected' : '' }}>Laki -
+                                                        Laki</option>
+                                                    <option value="Wanita"
+                                                        {{ $mahasiswa->jk === 'Wanita' ? 'selected' : '' }}>Wanita</option>
                                                 </select>
-                                              </div>
-                                              <div class="form-group">
+                                            </div>
+                                            <div class="form-group">
                                                 <label for="nohp">Nomor HP</label>
-                                                <input type="text" class="form-control border-success" id="nohp" name="nohp" value="{{ old('nohp', $mahasiswa->nohp) }}" required>
-                                              </div>
-                                              <div class="form-group">
+                                                <input type="text" class="form-control border-success" id="nohp"
+                                                    name="nohp" value="{{ old('nohp', $mahasiswa->nohp) }}" required>
+                                            </div>
+                                            <div class="form-group">
                                                 <label for="alamat">Alamat</label>
                                                 <textarea class="form-control border-success" id="alamat" name="alamat" rows="3" required>{{ old('alamat', $mahasiswa->alamat) }}</textarea>
-                                              </div>
-                                              <div class="form-group">
+                                            </div>
+                                            <div class="form-group">
                                                 <label for="fakultas">Fakultas</label>
-                                                <input type="text" class="form-control border-success" id="fakultas" name="fakultas" value="{{ old('fakultas', $mahasiswa->fakultas) }}" required>
-                                              </div>
-                                              <div class="form-group">
+                                                <input type="text" class="form-control border-success" id="fakultas"
+                                                    name="fakultas" value="{{ old('fakultas', $mahasiswa->fakultas) }}"
+                                                    required>
+                                            </div>
+                                            <div class="form-group">
                                                 <label for="jurusan">Jurusan</label>
-                                                <input type="text" class="form-control border-success" id="jurusan" name="jurusan" value="{{ old('jurusan', $mahasiswa->jurusan) }}" required>
-                                              </div>
-                                              <div class="form-group">
+                                                <input type="text" class="form-control border-success" id="jurusan"
+                                                    name="jurusan" value="{{ old('jurusan', $mahasiswa->jurusan) }}"
+                                                    required>
+                                            </div>
+                                            <div class="form-group">
                                                 <label for="gambar">Gambar</label>
-                                                <input type="file" class="form-control-file" id="gambar" name="gambar">
-                                              </div>
-                                    
+                                                <input type="file" class="form-control-file" id="gambar"
+                                                    name="gambar">
+                                            </div>
+
                                         </div>
                                         <!-- Tambahkan input lainnya sesuai dengan atribut yang ingin diubah -->
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">Close</button>
                                         <button type="submit" class="btn btn-primary">Update Data</button>
                                     </div>
                                 </form>
                             </div>
                         </div>
                     </div>
-                
+
 
                 </div>
             </div>
@@ -401,6 +474,14 @@
     <!-- Footer Section Start -->
 
     @include('tampilan_superadmin.javascript')
+    <script>
+        $(document).ready(function() {
+            $('.cetak-btn').click(function() {
+                var id = $(this).data('id');
+                window.location.href = '/superadmin/cetak-pdf/' + id;
+            });
+        });
+    </script>
     <script>
         $(document).ready(function() {
             $('.edit-mahasiswa').click(function() {
