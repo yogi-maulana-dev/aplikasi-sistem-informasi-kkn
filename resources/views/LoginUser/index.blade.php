@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en" dir="ltr">
 
-<!-- 
+<!--
 * Show the form for creating a new resource.
 * Whatapps 6289631031237
 * email : yogimaulana100@gmail.com
@@ -14,17 +14,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title data-leftJoin="SKKN ini adalah salah satu project yang dibuat oleh " data-setting="app_name">
         Sistem Kuliah Kerja Nyata Universitas Muhammadiyah Lampung
-        </title>
-        <meta name="description" content="Ini adalah website sistem kuliah kerja untuk universitas." />
-        <meta name="keywords"
-            content="projectyai, admin, dashboard, template, bootstrap 5, clean ui, hope ui, admin dashboard,responsive dashboard, optimized dashboard," />
-        <meta name="author" content="Iqonic Design" />
-        <meta name="DC.title" content="Sistem Kuliah Kerja Nyata Universitas Muhammadiyah" />
+    </title>
+    <meta name="description" content="Ini adalah website sistem kuliah kerja untuk universitas." />
+    <meta name="keywords"
+        content="projectyai, admin, dashboard, template, bootstrap 5, clean ui, hope ui, admin dashboard,responsive dashboard, optimized dashboard," />
+    <meta name="author" content="Iqonic Design" />
+    <meta name="DC.title" content="Sistem Kuliah Kerja Nyata Universitas Muhammadiyah" />
 
     <!-- Google Font Api KEY-->
     <meta name="google_font_api" content="AIzaSyBG58yNdAjc20_8jAvLNSVi9E4Xhwjau_k">
     <!-- Config Options -->
-     <!-- Favicon -->
+    <!-- Favicon -->
     <link rel="shortcut icon" href="https://templates.iqonic.design/hope-ui/pro/html/assets/images/favicon.ico">
     <!-- Library / Plugin Css Build -->
     <link rel="stylesheet" href="/admin/css/core/libs.min.css">
@@ -110,54 +110,73 @@
                                     </a>
                                     <h2 class="mb-2 text-center">Silakan Masuk</h2>
 
-@if (session()->has('success'))
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        {{ session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    @if (session()->has('success'))
+                                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                            {{ session('success') }}
+                                            <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                                aria-label="Close"></button>
+                                        </div>
+                                    @endif
+
+                                    @if (session()->has('loginError'))
+                                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                                            <strong>{{ session('loginError') }}!</strong>
+                                            <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                                aria-label="Close"></button>
+                                        </div>
+                                    @endif
+
+                                    @if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
     </div>
 @endif
 
-@if (session()->has('loginError'))
-    <div class="alert alert-warning alert-dismissible fade show" role="alert">
-        <strong>{{ session('loginError') }}!</strong>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-@endif
-
-<form method="post" action="{{ route('loginaction') }}">
-    {{ csrf_field() }}
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="form-group">
-                <label for="npm" class="form-label">Nomor Pokok Mahasiswa</label>
-                <input type="text" value="{{ old('login_identifier') }}" class="form-control @error('login_identifier') is-invalid @enderror" id="npm" name="login_identifier" aria-describedby="npm" placeholder=" ">
-                @error('login_identifier')
-                <span class="invalid-feedback">{{ $message }}</span>
-                @enderror
-            </div>
-        </div>
-        <div class="col-lg-12">
-            <div class="form-group">
-                <label for="password" class="form-label">Password</label>
-                <input type="password" class="form-control @error('password') is-invalid @enderror" id="password" name="password" aria-describedby="password" placeholder=" ">
-                @error('password')
-                <span class="invalid-feedback">{{ $message }}</span>
-                @enderror
-            </div>
-        </div>
-        {{-- <div class="col-lg-12 d-flex justify-content-between">
+                                    <form method="post" action="{{ route('loginaction') }}">
+                                        {{ csrf_field() }}
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                <div class="form-group">
+                                                    <label for="npm" class="form-label">Nomor Pokok
+                                                        Mahasiswa</label>
+                                                    <input type="text" value="{{ old('login_identifier') }}"
+                                                        class="form-control @error('login_identifier') is-invalid @enderror"
+                                                        id="npm" name="login_identifier" aria-describedby="npm"
+                                                        placeholder=" ">
+                                                    @error('login_identifier')
+                                                        <span class="invalid-feedback">{{ $message }}</span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12">
+                                                <div class="form-group">
+                                                    <label for="password" class="form-label">Password</label>
+                                                    <input type="password"
+                                                        class="form-control @error('password') is-invalid @enderror"
+                                                        id="password" name="password" aria-describedby="password"
+                                                        placeholder=" ">
+                                                    @error('password')
+                                                        <span class="invalid-feedback">{{ $message }}</span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                            {{-- <div class="col-lg-12 d-flex justify-content-between">
             <div class="form-check mb-3">
                 <input type="checkbox" class="form-check-input" id="customCheck1">
                 <label class="form-check-label" for="customCheck1">Remember Me</label>
             </div>
             <a href="recoverpw.html">Lupa Password?</a>
         </div> --}}
-    </div>
-    <div class="mt-2 text-center">
-        <button type="submit" class="btn btn-primary">Masuk</button>
-        <a href="" class="btn btn-secondary">Daftar</a>
-    </div>
-</form>
+                                        </div>
+                                        <div class="mt-2 text-center">
+                                            <button type="submit" class="btn btn-primary">Masuk</button>
+                                            <a href="{{ route("pendaftaraan") }}" class="btn btn-secondary">Daftar</a>
+                                        </div>
+                                    </form>
 
 
 
@@ -663,7 +682,7 @@
         </div>
     </div>
     <!-- Settings sidebar end here -->
- <!-- Live Customizer end -->
+    <!-- Live Customizer end -->
 
     <!-- Library Bundle Script -->
     <script src="/admin/js/core/libs.min.js"></script>

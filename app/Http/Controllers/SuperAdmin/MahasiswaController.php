@@ -222,6 +222,33 @@ class MahasiswaController extends Controller
         return redirect()->back()->with('success', 'Data mahasiswa berhasil diperbarui.');
     }
 
+    public function aktif(Request $request, $id)
+    {
+        //
+        $validator = Validator::make(
+            $request->all(),
+            [
+                
+                'aktif' => 'required',
+            ],
+            [
+                'aktif.required' => 'wajib diisi',
+            ]
+        );
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        $mahasiswa = Mahasiswa::findOrFail($id);
+        
+        $mahasiswa->aktif =$request->aktif;
+
+        $mahasiswa->save();
+
+        return redirect()->back()->with('success', 'Data mahasiswa berhasil diperbarui.');
+    }
+
     /**
      * Remove the specified resource from storage.
      */

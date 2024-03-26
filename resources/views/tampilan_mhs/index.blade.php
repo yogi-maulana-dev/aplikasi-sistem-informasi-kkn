@@ -5,6 +5,7 @@
 @include('tampilan_mhs.nav')
 
 @yield('dashboard')
+@yield('tugas')
 @yield('profil')
 @yield('edit-profil')
 @include('tampilan_mhs.modal')

@@ -115,10 +115,12 @@
                                                     <td>{{ $lokasi->nohp }}</td>
 
                                                     <td>
-                                                          <!-- Tombol untuk membuka modal -->
-            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#viewlokasiModal{{ $lokasi->id }}">
-                Lihat Detail
-            </button>
+                                                        <!-- Tombol untuk membuka modal -->
+                                                        <button type="button" class="btn btn-success"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#viewlokasiModal{{ $lokasi->id }}">
+                                                            Lihat Detail
+                                                        </button>
                                                         <button type="button" class="btn btn-primary"
                                                             data-bs-toggle="modal"
                                                             data-bs-target="#editlokasiModal{{ $lokasi->id }}">
@@ -342,6 +344,8 @@
                                             @enderror
                                         </div>
 
+
+
                                     </div>
                             </div>
 
@@ -356,206 +360,208 @@
                 </div>
 
 
-                   <!-- Modal View lokasi -->
-                   @isset($lokasi)
-    <div class="modal fade" id="viewlokasiModal{{ $lokasi->id }}" tabindex="-1" aria-labelledby="viewlokasiModalLabel{{ $lokasi->id }}" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="viewlokasiModalLabel{{ $lokasi->id }}">Detail Lokasi</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                     <p><strong>NIP:</strong> {{ $lokasi->nip }}</p>
-                    <p><strong>Nama:</strong> {{ $lokasi->nama }}</p>
-                    <p><strong>Jenis Kelamin:</strong> {{ $lokasi->jenis_kelamin }}</p>
-                    <p><strong>Agama:</strong> {{ $lokasi->agama }}</p>
-                    <p><strong>Provinsi:</strong> {{ $lokasi->provinsiData->name }}</p>
-                    <p><strong>Kota/Kabupaten:</strong> {{ $lokasi->kotaData->name }}</p>
-                    <p><strong>Kecamatan:</strong> {{ $lokasi->kecamatanData->name }}</p>
-                    <p><strong>Desa:</strong> {{ $lokasi->desaData->name }}</p>
-                    <!-- Tambahkan detail lainnya sesuai kebutuhan -->
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    @endisset
-                <!-- Modal Edit lokasi -->
+                <!-- Modal View lokasi -->
                 @isset($lokasi)
-                <div class="modal fade" id="editlokasiModal{{ $lokasi->id }}" tabindex="-1"
-                    aria-labelledby="editlokasiModalLabel{{ $lokasi->id }}" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="editlokasiModalLabel{{ $lokasi->id }}">Edit Mahasiswa
-                                </h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
-                            </div>
-                            <form action="{{ route('superadmin.lokasi.update', ['id' => $lokasi->id]) }}" method="POST"
-                                enctype="multipart/form-data">
-                                @csrf
-                                @method('PUT')
+                    <div class="modal fade" id="viewlokasiModal{{ $lokasi->id }}" tabindex="-1"
+                        aria-labelledby="viewlokasiModalLabel{{ $lokasi->id }}" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="viewlokasiModalLabel{{ $lokasi->id }}">Detail Lokasi</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
                                 <div class="modal-body">
-                                    <!-- Form untuk mengedit data lokasi -->
-                                    <div class="mb-3">
-
-
-                                        <!-- Di dalam modal -->
-                                        <div class="form-group">
-                                            <label class="form-label" for="provinsi{{ $lokasi->id }}">Provinsi</label>
-                                            <select name="provinsi{{ $lokasi->id }}" class="form-select border-success"
-                                                id="provinsi{{ $lokasi->id }}">
-                                                <option value="">Pilih Provinsi</option>
-                                                @foreach ($provinces as $provinsi)
-                                                    <option value="{{ $provinsi->id }}"
-                                                        {{ $provinsi->id == $lokasi->provinsi ? 'selected' : '' }}>
-                                                        {{ $provinsi->name }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label class="form-label"
-                                                for="kota{{ $lokasi->id }}">Kota/Kabupaten</label>
-                                            <select name="kota{{ $lokasi->id }}" class="form-select border-success"
-                                                id="kota{{ $lokasi->id }}">
-                                                <!-- Opsi akan dimuat melalui JavaScript -->
-                                            </select>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label class="form-label"
-                                                for="kecamatan{{ $lokasi->id }}">Kecamatan</label>
-                                            <select name="kecamatan{{ $lokasi->id }}"
-                                                class="form-select border-success" id="kecamatan{{ $lokasi->id }}">
-                                                <!-- Opsi akan dimuat melalui JavaScript -->
-                                            </select>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label class="form-label" for="desa{{ $lokasi->id }}">Desa</label>
-                                            <select name="desa{{ $lokasi->id }}" class="form-select border-success"
-                                                id="desa{{ $lokasi->id }}">
-                                                <!-- Opsi akan dimuat melalui JavaScript -->
-                                            </select>
-                                        </div>
-
-
-                                        <!-- Form untuk nomor induk pegawai -->
-                                        <div class="form-group">
-                                            <label class="form-label" for="nipx">Nomor Induk Pegawai:</label>
-                                            <input type="number" name="nipx"
-                                                class="form-control border-success @error('nipx') is-invalid @enderror"
-                                                id="nipx" value="{{ $lokasi->nip }}">
-                                            @error('nipx')
-                                                <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $message }}</strong>
-                                                </span>
-                                            @enderror
-                                        </div>
-
-                                        <!-- Form untuk nama lengkap -->
-                                        <div class="form-group">
-                                            <label class="form-label" for="namax">Nama Lengkap:</label>
-                                            <input type="text" name="namax"
-                                                class="form-control border-success @error('namax') is-invalid @enderror"
-                                                id="namax" value="{{ $lokasi->nama }}">
-                                            @error('namax')
-                                                <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $message }}</strong>
-                                                </span>
-                                            @enderror
-                                        </div>
-
-                                        <!-- Form untuk nomor handphone -->
-                                        <div class="form-group">
-                                            <label class="form-label" for="nohpx">Nomor Handphone:</label>
-                                            <input type="number" name="nohpx"
-                                                class="form-control border-success @error('nohpx') is-invalid @enderror"
-                                                id="nohpx" value="{{ $lokasi->nohp }}">
-                                            @error('nohpx')
-                                                <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $message }}</strong>
-                                                </span>
-                                            @enderror
-                                        </div>
-
-
-
-                                        <div class="form-group">
-                                            <label class="form-label" for="alamatx">Alamat KKN:</label>
-                                            <textarea name="alamatx" class="form-control border-success @error('alamatx') is-invalid @enderror" id="alamatx">{{ $lokasi->alamat }}</textarea>
-                                            @error('alamatx')
-                                                <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $message }}</strong>
-                                                </span>
-                                            @enderror
-                                        </div>
-
-                                        <!-- Form untuk jenis kelamin -->
-                                        <label class="form-label">Jenis Kelamin:</label>
-                                        <div class="form-group">
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="radio" name="jenis_kelaminx"
-                                                    id="laki_lakix" value="laki_laki"
-                                                    @if ($lokasi->jenis_kelamin == 'laki_laki') checked @endif>
-                                                <label class="form-check-label" for="laki_laki">Laki-laki</label>
-                                            </div>
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="radio" name="jenis_kelaminx"
-                                                    id="perempuanx" value="perempuan"
-                                                    @if ($lokasi->jenis_kelamin == 'perempuan') checked @endif>
-                                                <label class="form-check-label" for="perempuan">Perempuan</label>
-                                            </div>
-                                        </div>
-
-                                        <!-- Form untuk memilih agama -->
-                                        <div class="form-group">
-                                            <label class="form-label" for="agamax">Agama</label>
-                                            <select name="agamax"
-                                                class="form-select border-success @error('agamax') is-invalid @enderror"
-                                                data-trigger id="agamax">
-                                                <option value="">Pilih Agama</option>
-                                                <option value="Islam" @if ($lokasi->agama == 'Islam') selected @endif>
-                                                    Islam</option>
-                                                <option value="Kristen" @if ($lokasi->agama == 'Kristen') selected @endif>
-                                                    Kristen</option>
-                                                <option value="Katolik" @if ($lokasi->agama == 'Katolik') selected @endif>
-                                                    Katolik</option>
-                                                <option value="Hindu" @if ($lokasi->agama == 'Hindu') selected @endif>
-                                                    Hindu</option>
-                                                <option value="Buddha" @if ($lokasi->agama == 'Buddha') selected @endif>
-                                                    Buddha</option>
-                                                <option value="Konghucu"
-                                                    @if ($lokasi->agama == 'Konghucu') selected @endif>Konghucu
-                                                </option>
-                                                <option value="Kepercayaan Lainnya"
-                                                    @if ($lokasi->agama == 'Kepercayaan Lainnya') selected @endif>Kepercayaan
-                                                    Lainnya</option>
-                                            </select>
-                                            @error('agamax')
-                                                <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $message }}</strong>
-                                                </span>
-                                            @enderror
-                                        </div>
-                                    </div>
+                                    <p><strong>NIP:</strong> {{ $lokasi->nip }}</p>
+                                    <p><strong>Nama:</strong> {{ $lokasi->nama }}</p>
+                                    <p><strong>Jenis Kelamin:</strong> {{ $lokasi->jenis_kelamin }}</p>
+                                    <p><strong>Agama:</strong> {{ $lokasi->agama }}</p>
+                                    <p><strong>Provinsi:</strong> {{ $lokasi->provinsiData->name }}</p>
+                                    <p><strong>Kota/Kabupaten:</strong> {{ $lokasi->kotaData->name }}</p>
+                                    <p><strong>Kecamatan:</strong> {{ $lokasi->kecamatanData->name }}</p>
+                                    <p><strong>Desa:</strong> {{ $lokasi->desaData->name }}</p>
+                                    <!-- Tambahkan detail lainnya sesuai kebutuhan -->
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary"
-                                        data-bs-dismiss="modal">Close</button>
-                                    <button type="submit" class="btn btn-primary">Update Data</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                 </div>
-                            </form>
-
+                            </div>
                         </div>
                     </div>
-                </div>
+                @endisset
+                <!-- Modal Edit lokasi -->
+                @isset($lokasi)
+                    <div class="modal fade" id="editlokasiModal{{ $lokasi->id }}" tabindex="-1"
+                        aria-labelledby="editlokasiModalLabel{{ $lokasi->id }}" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="editlokasiModalLabel{{ $lokasi->id }}">Edit Mahasiswa
+                                    </h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <form action="{{ route('superadmin.lokasi.update', ['id' => $lokasi->id]) }}" method="POST"
+                                    enctype="multipart/form-data">
+                                    @csrf
+                                    @method('PUT')
+                                    <div class="modal-body">
+                                        <!-- Form untuk mengedit data lokasi -->
+                                        <div class="mb-3">
+
+
+                                            <!-- Di dalam modal -->
+                                            <div class="form-group">
+                                                <label class="form-label" for="provinsi{{ $lokasi->id }}">Provinsi</label>
+                                                <select name="provinsi{{ $lokasi->id }}" class="form-select border-success"
+                                                    id="provinsi{{ $lokasi->id }}">
+                                                    <option value="">Pilih Provinsi</option>
+                                                    @foreach ($provinces as $provinsi)
+                                                        <option value="{{ $provinsi->id }}"
+                                                            {{ $provinsi->id == $lokasi->provinsi ? 'selected' : '' }}>
+                                                            {{ $provinsi->name }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="form-label"
+                                                    for="kota{{ $lokasi->id }}">Kota/Kabupaten</label>
+                                                <select name="kota{{ $lokasi->id }}" class="form-select border-success"
+                                                    id="kota{{ $lokasi->id }}">
+                                                    <!-- Opsi akan dimuat melalui JavaScript -->
+                                                </select>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="form-label"
+                                                    for="kecamatan{{ $lokasi->id }}">Kecamatan</label>
+                                                <select name="kecamatan{{ $lokasi->id }}"
+                                                    class="form-select border-success" id="kecamatan{{ $lokasi->id }}">
+                                                    <!-- Opsi akan dimuat melalui JavaScript -->
+                                                </select>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="form-label" for="desa{{ $lokasi->id }}">Desa</label>
+                                                <select name="desa{{ $lokasi->id }}" class="form-select border-success"
+                                                    id="desa{{ $lokasi->id }}">
+                                                    <!-- Opsi akan dimuat melalui JavaScript -->
+                                                </select>
+                                            </div>
+
+
+                                            <!-- Form untuk nomor induk pegawai -->
+                                            <div class="form-group">
+                                                <label class="form-label" for="nipx">Nomor Induk Pegawai:</label>
+                                                <input type="number" name="nipx"
+                                                    class="form-control border-success @error('nipx') is-invalid @enderror"
+                                                    id="nipx" value="{{ $lokasi->nip }}">
+                                                @error('nipx')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                @enderror
+                                            </div>
+
+                                            <!-- Form untuk nama lengkap -->
+                                            <div class="form-group">
+                                                <label class="form-label" for="namax">Nama Lengkap:</label>
+                                                <input type="text" name="namax"
+                                                    class="form-control border-success @error('namax') is-invalid @enderror"
+                                                    id="namax" value="{{ $lokasi->nama }}">
+                                                @error('namax')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                @enderror
+                                            </div>
+
+                                            <!-- Form untuk nomor handphone -->
+                                            <div class="form-group">
+                                                <label class="form-label" for="nohpx">Nomor Handphone:</label>
+                                                <input type="number" name="nohpx"
+                                                    class="form-control border-success @error('nohpx') is-invalid @enderror"
+                                                    id="nohpx" value="{{ $lokasi->nohp }}">
+                                                @error('nohpx')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                @enderror
+                                            </div>
+
+
+
+                                            <div class="form-group">
+                                                <label class="form-label" for="alamatx">Alamat KKN:</label>
+                                                <textarea name="alamatx" class="form-control border-success @error('alamatx') is-invalid @enderror" id="alamatx">{{ $lokasi->alamat }}</textarea>
+                                                @error('alamatx')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                @enderror
+                                            </div>
+
+                                            <!-- Form untuk jenis kelamin -->
+                                            <label class="form-label">Jenis Kelamin:</label>
+                                            <div class="form-group">
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" name="jenis_kelaminx"
+                                                        id="laki_lakix" value="laki_laki"
+                                                        @if ($lokasi->jenis_kelamin == 'laki_laki') checked @endif>
+                                                    <label class="form-check-label" for="laki_laki">Laki-laki</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" name="jenis_kelaminx"
+                                                        id="perempuanx" value="perempuan"
+                                                        @if ($lokasi->jenis_kelamin == 'perempuan') checked @endif>
+                                                    <label class="form-check-label" for="perempuan">Perempuan</label>
+                                                </div>
+                                            </div>
+
+                                            <!-- Form untuk memilih agama -->
+                                            <div class="form-group">
+                                                <label class="form-label" for="agamax">Agama</label>
+                                                <select name="agamax"
+                                                    class="form-select border-success @error('agamax') is-invalid @enderror"
+                                                    data-trigger id="agamax">
+                                                    <option value="">Pilih Agama</option>
+                                                    <option value="Islam" @if ($lokasi->agama == 'Islam') selected @endif>
+                                                        Islam</option>
+                                                    <option value="Kristen" @if ($lokasi->agama == 'Kristen') selected @endif>
+                                                        Kristen</option>
+                                                    <option value="Katolik" @if ($lokasi->agama == 'Katolik') selected @endif>
+                                                        Katolik</option>
+                                                    <option value="Hindu" @if ($lokasi->agama == 'Hindu') selected @endif>
+                                                        Hindu</option>
+                                                    <option value="Buddha" @if ($lokasi->agama == 'Buddha') selected @endif>
+                                                        Buddha</option>
+                                                    <option value="Konghucu"
+                                                        @if ($lokasi->agama == 'Konghucu') selected @endif>Konghucu
+                                                    </option>
+                                                    <option value="Kepercayaan Lainnya"
+                                                        @if ($lokasi->agama == 'Kepercayaan Lainnya') selected @endif>Kepercayaan
+                                                        Lainnya</option>
+                                                </select>
+                                                @error('agamax')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                @enderror
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary">Update Data</button>
+                                    </div>
+                                </form>
+
+                            </div>
+                        </div>
+                    </div>
                 @endisset
             </div>
         </div>
@@ -563,13 +569,12 @@
     <!-- div fb Start -->
     </div>
 
-
-
-
     <!-- Footer Section Start -->
 
     @include('tampilan_superadmin.javascript')
-   
+
+
+
     <script>
         $(document).ready(function() {
             // Ajax setup to include CSRF token with every request
@@ -641,137 +646,138 @@
             });
         });
     </script>
-     @isset($lokasi)
-    <script>
-        $(document).ready(function() {
-            // Fungsi untuk memuat data kota/kabupaten saat modal ditampilkan
-            function loadRegencies(provinsiId) {
-                $.ajax({
-                    type: "GET",
-                    url: "{{ route('superadmin.get.regencies') }}?provinsi_id=" + provinsiId,
-                    success: function(res) {
-                        if (res) {
-                            $("#kota{{ $lokasi->id }}").empty();
-                            $("#kota{{ $lokasi->id }}").append(
-                                '<option value="">Pilih Kota/Kabupaten</option>');
-                            $.each(res, function(key, value) {
-                                $("#kota{{ $lokasi->id }}").append('<option value="' + value
-                                    .id + '">' + value.name + '</option>');
-                            });
+    @isset($lokasi)
+        <script>
+            $(document).ready(function() {
+                // Fungsi untuk memuat data kota/kabupaten saat modal ditampilkan
+                function loadRegencies(provinsiId) {
+                    $.ajax({
+                        type: "GET",
+                        url: "{{ route('superadmin.get.regencies') }}?provinsi_id=" + provinsiId,
+                        success: function(res) {
+                            if (res) {
+                                $("#kota{{ $lokasi->id }}").empty();
+                                $("#kota{{ $lokasi->id }}").append(
+                                    '<option value="">Pilih Kota/Kabupaten</option>');
+                                $.each(res, function(key, value) {
+                                    $("#kota{{ $lokasi->id }}").append('<option value="' + value
+                                        .id + '">' + value.name + '</option>');
+                                });
 
-                            // Memilih nilai yang sesuai
-                            $("#kota{{ $lokasi->id }}").val({{ $lokasi->kota }});
-                            loadDistricts(
-                            {{ $lokasi->kota }}); // Memuat kecamatan berdasarkan kota yang dipilih
-                        } else {
-                            $("#kota{{ $lokasi->id }}").empty();
-                            $("#kecamatan{{ $lokasi->id }}").empty(); // Kosongkan dropdown kecamatan
-                            $("#desa{{ $lokasi->id }}").empty(); // Kosongkan dropdown desa
+                                // Memilih nilai yang sesuai
+                                $("#kota{{ $lokasi->id }}").val({{ $lokasi->kota }});
+                                loadDistricts(
+                                    {{ $lokasi->kota }}); // Memuat kecamatan berdasarkan kota yang dipilih
+                            } else {
+                                $("#kota{{ $lokasi->id }}").empty();
+                                $("#kecamatan{{ $lokasi->id }}").empty(); // Kosongkan dropdown kecamatan
+                                $("#desa{{ $lokasi->id }}").empty(); // Kosongkan dropdown desa
+                            }
                         }
-                    }
-                });
-            }
+                    });
+                }
 
-            // Fungsi untuk memuat data kecamatan saat dipanggil
-            function loadDistricts(kotaId) {
-                $.ajax({
-                    type: "GET",
-                    url: "{{ route('superadmin.get.districts') }}?kota_id=" + kotaId,
-                    success: function(res) {
-                        if (res) {
-                            $("#kecamatan{{ $lokasi->id }}").empty();
-                            $("#kecamatan{{ $lokasi->id }}").append(
-                                '<option value="">Pilih Kecamatan</option>');
-                            $.each(res, function(key, value) {
-                                $("#kecamatan{{ $lokasi->id }}").append('<option value="' +
-                                    value.id + '">' + value.name + '</option>');
-                            });
+                // Fungsi untuk memuat data kecamatan saat dipanggil
+                function loadDistricts(kotaId) {
+                    $.ajax({
+                        type: "GET",
+                        url: "{{ route('superadmin.get.districts') }}?kota_id=" + kotaId,
+                        success: function(res) {
+                            if (res) {
+                                $("#kecamatan{{ $lokasi->id }}").empty();
+                                $("#kecamatan{{ $lokasi->id }}").append(
+                                    '<option value="">Pilih Kecamatan</option>');
+                                $.each(res, function(key, value) {
+                                    $("#kecamatan{{ $lokasi->id }}").append('<option value="' +
+                                        value.id + '">' + value.name + '</option>');
+                                });
 
-                            // Memilih nilai yang sesuai
-                            $("#kecamatan{{ $lokasi->id }}").val({{ $lokasi->kecamatan }});
-                            loadVillages(
-                            {{ $lokasi->kecamatan }}); // Memuat desa berdasarkan kecamatan yang dipilih
-                        } else {
-                            $("#kecamatan{{ $lokasi->id }}").empty();
-                            $("#desa{{ $lokasi->id }}").empty(); // Kosongkan dropdown desa
+                                // Memilih nilai yang sesuai
+                                $("#kecamatan{{ $lokasi->id }}").val({{ $lokasi->kecamatan }});
+                                loadVillages(
+                                    {{ $lokasi->kecamatan }}
+                                    ); // Memuat desa berdasarkan kecamatan yang dipilih
+                            } else {
+                                $("#kecamatan{{ $lokasi->id }}").empty();
+                                $("#desa{{ $lokasi->id }}").empty(); // Kosongkan dropdown desa
+                            }
                         }
-                    }
-                });
-            }
+                    });
+                }
 
-            // Fungsi untuk memuat data desa saat dipanggil
-            function loadVillages(kecamatanId) {
-                $.ajax({
-                    type: "GET",
-                    url: "{{ route('superadmin.get.villages') }}?kecamatan_id=" + kecamatanId,
-                    success: function(res) {
-                        if (res) {
-                            var desaSelect = $("#desa{{ $lokasi->id }}");
-                            desaSelect.empty().append('<option value="">Pilih Desa</option>');
-                            $.each(res, function(key, value) {
-                                desaSelect.append('<option value="' + value.id + '">' + value
-                                    .name + '</option>');
-                            });
+                // Fungsi untuk memuat data desa saat dipanggil
+                function loadVillages(kecamatanId) {
+                    $.ajax({
+                        type: "GET",
+                        url: "{{ route('superadmin.get.villages') }}?kecamatan_id=" + kecamatanId,
+                        success: function(res) {
+                            if (res) {
+                                var desaSelect = $("#desa{{ $lokasi->id }}");
+                                desaSelect.empty().append('<option value="">Pilih Desa</option>');
+                                $.each(res, function(key, value) {
+                                    desaSelect.append('<option value="' + value.id + '">' + value
+                                        .name + '</option>');
+                                });
 
-                            // Memilih nilai yang sesuai setelah opsi desa dimuat
-                            $("#desa{{ $lokasi->id }}").val({{ $lokasi->desa }});
-                        } else {
-                            $("#desa{{ $lokasi->id }}").empty();
+                                // Memilih nilai yang sesuai setelah opsi desa dimuat
+                                $("#desa{{ $lokasi->id }}").val({{ $lokasi->desa }});
+                            } else {
+                                $("#desa{{ $lokasi->id }}").empty();
+                            }
                         }
-                    }
-                });
-            }
+                    });
+                }
 
-            // Memuat data kota/kabupaten saat modal ditampilkan
-            var provinsiId = $("#provinsi{{ $lokasi->id }}").val();
-            if (provinsiId) {
-                loadRegencies(provinsiId);
-            }
-
-            // Menangani perubahan provinsi
-            $('#provinsi{{ $lokasi->id }}').change(function() {
-                var provinsiId = $(this).val();
+                // Memuat data kota/kabupaten saat modal ditampilkan
+                var provinsiId = $("#provinsi{{ $lokasi->id }}").val();
                 if (provinsiId) {
                     loadRegencies(provinsiId);
-                } else {
-                    $("#kota{{ $lokasi->id }}").empty();
-                    $("#kecamatan{{ $lokasi->id }}").empty(); // Kosongkan dropdown kecamatan
-                    $("#desa{{ $lokasi->id }}").empty(); // Kosongkan dropdown desa
                 }
-            });
 
-            // Menangani perubahan kota/kabupaten
-            $('#kota{{ $lokasi->id }}').change(function() {
-                var kotaId = $(this).val();
-                if (kotaId) {
-                    loadDistricts(kotaId);
-                } else {
-                    $("#kecamatan{{ $lokasi->id }}").empty();
-                    $("#desa{{ $lokasi->id }}").empty(); // Kosongkan dropdown desa
-                }
-            });
+                // Menangani perubahan provinsi
+                $('#provinsi{{ $lokasi->id }}').change(function() {
+                    var provinsiId = $(this).val();
+                    if (provinsiId) {
+                        loadRegencies(provinsiId);
+                    } else {
+                        $("#kota{{ $lokasi->id }}").empty();
+                        $("#kecamatan{{ $lokasi->id }}").empty(); // Kosongkan dropdown kecamatan
+                        $("#desa{{ $lokasi->id }}").empty(); // Kosongkan dropdown desa
+                    }
+                });
 
-            // Menangani perubahan kecamatan
-            $('#kecamatan{{ $lokasi->id }}').change(function() {
-                var kecamatanId = $(this).val();
-                if (kecamatanId) {
-                    loadVillages(kecamatanId);
-                } else {
-                    $("#desa{{ $lokasi->id }}").empty();
-                }
-            });
-        });
-    </script>
+                // Menangani perubahan kota/kabupaten
+                $('#kota{{ $lokasi->id }}').change(function() {
+                    var kotaId = $(this).val();
+                    if (kotaId) {
+                        loadDistricts(kotaId);
+                    } else {
+                        $("#kecamatan{{ $lokasi->id }}").empty();
+                        $("#desa{{ $lokasi->id }}").empty(); // Kosongkan dropdown desa
+                    }
+                });
 
-    <script>
-        $(document).ready(function() {
-            // Tambahkan kelas blink setiap 1 detik
-            setInterval(function() {
-                $('#aktif option:selected').toggleClass('blink');
-            }, 1000);
-        });
-    </script>
-   @endisset
+                // Menangani perubahan kecamatan
+                $('#kecamatan{{ $lokasi->id }}').change(function() {
+                    var kecamatanId = $(this).val();
+                    if (kecamatanId) {
+                        loadVillages(kecamatanId);
+                    } else {
+                        $("#desa{{ $lokasi->id }}").empty();
+                    }
+                });
+            });
+        </script>
+
+        <script>
+            $(document).ready(function() {
+                // Tambahkan kelas blink setiap 1 detik
+                setInterval(function() {
+                    $('#aktif option:selected').toggleClass('blink');
+                }, 1000);
+            });
+        </script>
+    @endisset
     <script src="/admin/js/plugins/fslightbox.js" defer></script>
 
     </main>

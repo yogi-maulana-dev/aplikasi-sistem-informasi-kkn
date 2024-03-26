@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\SuperAdmin;
 
+use App\Models\Dosen;
 use App\Models\Lokasi;
 use App\Models\Regency;
 use App\Models\Village;
@@ -56,6 +57,8 @@ class LokasiController extends Controller
         $villages = Village::where('district_id', $kecamatanId)->select('id', 'name')->get();
         return response()->json($villages);
     }
+
+  
 
     /**
      * Store a newly created resource in storage.

@@ -1,6 +1,6 @@
 
 
-<script src="/admin/dist/js/lightbox.min.js"></script>
+{{-- <script src="/admin/dist/js/lightbox.min.js"></script> --}}
 <script src="/admin/js/core/libs.min.js"></script>
 <!-- Plugin Scripts -->
 

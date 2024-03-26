@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers\SuperAdmin;
 
-use App\Http\Controllers\Controller;
+use App\Models\Dosen;
+use App\Models\Lokasi;
+use App\Models\Village;
 use App\Models\Kelompok;
 use App\Models\Mahasiswa;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class KelompokController extends Controller
 {
@@ -60,6 +63,26 @@ class KelompokController extends Controller
     return response()->json($mahasiswas);
 }
 
+public function cariDosen(Request $request)
+{
+    $term = $request->input('term'); // Ambil kata kunci pencarian dari request
+    $dosens = Dosen::where('nama', 'like', '%' . $term . '%')->get(); // Lakukan pencarian berdasarkan nama dosen
+
+    return response()->json($dosens); // Mengembalikan hasil pencarian dalam format JSON
+}
+
+public function cariLokasi(Request $request)
+{
+    $termlokasi = $request->input('term'); // Ambil kata kunci pencarian dari request
+    $lokasis = Lokasi::where('nip', 'like', '%' . $termlokasi . '%')
+                     ->orWhere('villages.name', 'like', '%' . $termlokasi . '%')
+                     ->join('villages', 'lokasi_kkn.desa', '=', 'villages.id')
+                     ->select('lokasi_kkn.desa', 'lokasi_kkn.nip', 'villages.name AS village_name')
+                     ->get();
+
+    return response()->json($lokasis); // Mengembalikan hasil pencarian dalam format JSON
+}
+
     /**
      * Show the form for creating a new resource.
      */
@@ -75,8 +98,10 @@ class KelompokController extends Controller
     {
         $request->validate([
             'nokelompok' => 'required',
-            'npm' => 'required|array|min:5|max:10', // Sesuaikan aturan validasi dengan kebutuhan
+            'npm' => 'required|array|min:3|max:10', // Sesuaikan aturan validasi dengan kebutuhan
             // tambahkan aturan validasi lainnya jika diperlukan
+            'dosen'=>'required',
+            'lokasi'=>'required',
         ]);
 
         // Proses penyimpanan data kelompok
@@ -86,6 +111,8 @@ class KelompokController extends Controller
             $kelompok = new Kelompok(); // Buat objek baru untuk setiap NPM
             $kelompok->nokelompok = $request->nokelompok;
             $kelompok->npm = $npm;
+            $kelompok->dosen = $request->dosen;
+            $kelompok->lokasi = $request->lokasi;
             // Set ketua hanya untuk NPM pertama
             if (!$isKetuaSet) {
                 $kelompok->ketua = '1';
@@ -109,20 +136,34 @@ class KelompokController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-     public function edit($nokelompok)
+     public function edit(Request $request,$nokelompok)
     {
+        $dosens = Dosen::all();
+        // $lokasi = Lokasi::findOrFail($id);
+        // $desas = Village::pluck('name', 'id');
+
+        $allkelompok = Kelompok::where('ketua', '1')
+        ->where('nokelompok', $nokelompok)
+        ->get();
+
+        $lokasiIds = $allkelompok->pluck('lokasi'); // Mengambil semua lokasi_id dari kumpulan kelompok
+
+        $desas = Village::whereIn('id', $lokasiIds)->get();
+        
         // Mengambil data kelompok berdasarkan nomor kelompok
         // $kelompok = Kelompok::where('nokelompok', $nokelompok)->firstOrFail();
         $kelompok = Kelompok::where('nokelompok', $nokelompok)->get()->reverse();
         // Mengambil data mahasiswa untuk pilihan pada dropdown
-        $allkelompok = Kelompok::where('ketua', '1')
-                      ->where('nokelompok', $nokelompok)
-                      ->get();
+       
+
+                      $lokasis = Lokasi::join('villages', 'lokasi_kkn.desa', '=', 'villages.id')
+                 ->select('lokasi_kkn.id', 'lokasi_kkn.nip', 'villages.name AS village_name')
+                 ->get();
 
         $mahasiswas = Mahasiswa::all();
 
         // Mengembalikan view edit dengan data kelompok yang akan diedit
-        return view('SuperAdmin.kelompok-edit', compact('kelompok', 'mahasiswas','allkelompok'));
+        return view('SuperAdmin.kelompok-edit', compact('kelompok', 'mahasiswas','allkelompok','lokasis','dosens','desas'));
     }
 
     /**
@@ -131,30 +172,36 @@ class KelompokController extends Controller
      public function update(Request $request, $nokelompok)
 {
  
-    try {
-            // Validasi data yang diterima dari form jika diperlukan
-        
+    
 
-            // Ambil data kelompok yang akan diupdate
-            $kelompok = Kelompok::where('nokelompok', $nokelompok)->firstOrFail();
+    $request->validate([
+        'dosen' => 'required', // Sesuaikan dengan aturan validasi yang Anda inginkan
+        'lokasi' => 'required',
+        'npm' => 'required|array', // Jika Anda ingin memastikan npm yang dikirim adalah sebuah array
+    ]);
 
-            // Loop melalui setiap entri mahasiswa yang ingin diupdate
-            foreach ($request->id as $key => $id) {
-                // Periksa apakah id valid dan terhubung dengan kelompok yang benar
-                $mahasiswa = $kelompok->where('id', $id)->first();
+    // Cari kelompok berdasarkan nomor kelompok
+    $kelompok = Kelompok::where('nokelompok', $nokelompok)->firstOrFail();
 
-                if ($mahasiswa) {
-                    // Perbarui npm untuk mahasiswa yang sesuai
-                    $mahasiswa->update(['npm' => $request->npm[$key]]);
+    // Update dosen pembimbing dan lokasi kelompok
+
+    // Hapus semua mahasiswa yang terhubung dengan kelompok ini
+    foreach ($request->id as $key => $id) {
+                    // Periksa apakah id valid dan terhubung dengan kelompok yang benar
+                    $mahasiswa = $kelompok->where('id', $id)->first();
+    
+                    if ($mahasiswa) {
+                        // Perbarui npm, dosen, dan lokasi untuk mahasiswa yang sesuai
+                        $mahasiswa->dosen = $request->dosen;
+                        $mahasiswa->lokasi = $request->lokasi;
+                        $mahasiswa->npm = $request->npm[$key];
+                        $mahasiswa->save();
+                    }
+
+          
                 }
-            }
 
-            // Redirect kembali ke halaman yang sesuai setelah berhasil melakukan update
-            return redirect()->route('superadmin.kelompok')->with('success', 'Data kelompok berhasil diperbarui.');
-        } catch (\Exception $e) {
-            // Jika terjadi kesalahan, kembalikan ke halaman sebelumnya dengan pesan kesalahan
-            return back()->withInput()->withErrors(['error' => 'Terjadi kesalahan saat memperbarui data kelompok.']);
-        }
+    return redirect()->route('superadmin.kelompok')->with('success', 'Data kelompok berhasil diperbarui.');
 }
 
 

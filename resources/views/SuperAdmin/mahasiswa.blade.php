@@ -1,6 +1,12 @@
 @extends('tampilan_superadmin.index')
 @section('mahasiswa')
 
+<style>
+    .btn-group .btn {
+    margin-right: 5px; /* Sesuaikan dengan jarak yang Anda inginkan */
+}
+
+</style>
     <div class="content-inner container-fluid pb-0" id="page_layout">
         <div class="row">
             <div class="col-lg-12">
@@ -24,7 +30,7 @@
                                 </div>
                                 <div class="d-flex flex-wrap align-items-center mb-3 mb-sm-0">
                                     <h4 class="me-2 h4">{{ Auth::guard('superadmin')->user()->namalengkap }}</h4>
-                                    <span> - Web Developer</span>
+                                    <span> - Super Admin</span>
                                 </div>
                             </div>
                             <ul class="d-flex nav nav-pills mb-0 text-center profile-tab" data-toggle="slider-tab"
@@ -54,7 +60,7 @@
                         <div class="card">
                             <div class="card-header d-flex justify-content-between">
                                 <div class="header-title">
-                                    <h4 class="card-title">Activity</h4>
+                                    <h4 class="card-title">Data Mahasiswa</h4>
                                 </div>
                             </div>
                             <div class="card-body">
@@ -75,11 +81,10 @@
                                 @endif
 
                                 <div class="table-responsive">
-                                    <table id="example" class="stripe hover"
-                                        style="width:100%; padding-top: 1em;  padding-bottom: 1em;">
+                                    <table id="example" class="stripe hover" style="width:100%; padding-top: 1em; padding-bottom: 1em;">
                                         <thead>
                                             <tr>
-                                                <th>Foto</th>
+                                                <th>Bukti Pembayaran</th>
                                                 <th>NPM</th>
                                                 <th>Nama Lengkap</th>
                                                 <th>Email</th>
@@ -90,48 +95,49 @@
                                         </thead>
                                         <tbody>
                                             @foreach ($allmahasiswa as $mahasiswa)
-                                                <tr>
-                                                    <td style="max-width: 100px;">
-                                                        <div class="grid grid-cols-3 gap-4">
-                                                            <a data-fslightbox="gallery"
-                                                                href="{{ url($mahasiswa->gambar) }}">
-                                                                <img src="{{ url($mahasiswa->gambar) }}"
-                                                                    class="img-fluid bg-soft-primary rounded w-100 h-100"
-                                                                    alt="profile-image" loading="lazy">
-                                                            </a>
-                                                        </div>
-                                                    </td>
-                                                    <td>{{ $mahasiswa->npm }}</td>
-                                                    <td>{{ $mahasiswa->nama_lengkap }}</td>
-                                                    <td>{{ $mahasiswa->email }}</td>
-                                                    <td>{{ $mahasiswa->jenis_kelamin }}</td>
-                                                    <td>{{ $mahasiswa->status }}</td>
-                                                    <td>
-                                                        <button type="button" class="btn btn-primary"
-                                                            data-bs-toggle="modal"
-                                                            data-bs-target="#editMahasiswaModal{{ $mahasiswa->id }}">
+                                            <tr>
+                                                <td style="max-width: 100px;">
+                                                    <div class="grid grid-cols-3 gap-4">
+                                                        <a data-fslightbox="gallery" href="{{ url($mahasiswa->gambarbayar) }}">
+                                                            <img src="{{ url($mahasiswa->gambarbayar) }}" class="img-fluid bg-soft-primary rounded w-100 h-100" alt="profile-image" loading="lazy">
+                                                        </a>
+                                                    </div>
+                                                </td>
+                                                <td>{{ $mahasiswa->npm }}</td>
+                                                <td>{{ $mahasiswa->namalengkap }}</td>
+                                                <td>{{ $mahasiswa->email }}</td>
+                                                <td>{{ $mahasiswa->jk }}</td>
+                                                <td>
+                                                    @if($mahasiswa->aktif == '1')
+                                                        <h5 class="text-success">Aktif</h5>
+                                                    @else
+                                                        <h5 class="text-warning">Tidak Aktif</h5>
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    <div class="btn-group" role="group" aria-label="Aksi">
+                                                        <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editMahasiswaModal{{ $mahasiswa->id }}">
                                                             Edit
                                                         </button>
-                                                        <form
-                                                            action="{{ route('superadmin.mahasiswa.delete', ['id' => $mahasiswa->id]) }}"
-                                                            method="POST" style="display: inline;">
+                                                        <form action="{{ route('superadmin.mahasiswa.delete', ['id' => $mahasiswa->id]) }}" method="POST" style="display: inline;">
                                                             @csrf
                                                             @method('DELETE')
-                                                            <button type="submit" class="btn btn-danger"
-                                                                onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">Hapus</button>
+                                                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">Hapus</button>
                                                         </form>
-
-                                                        <button type="button" class="btn btn-primary cetak-btn" data-id="{{ $mahasiswa->id }}">
+                                                        <button type="button" class="btn btn-sm btn-primary cetak-btn" data-id="{{ $mahasiswa->id }}">
                                                             Cetak Data
                                                         </button>
-                                                    </td>
-                                                </tr>
-
-                                                <!-- Modal Edit Mahasiswa -->
+                                                        <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#aktif{{ $mahasiswa->id }}">
+                                                            Aktifkan Akun
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                                
+                                                
+                                            </tr>
                                             @endforeach
                                         </tbody>
                                         <tfoot>
-
                                             <tr>
                                                 <th>Foto</th>
                                                 <th>NPM</th>
@@ -141,10 +147,10 @@
                                                 <th>Status</th>
                                                 <th>Aksi</th>
                                             </tr>
-
                                         </tfoot>
                                     </table>
                                 </div>
+                                
                             </div>
 
                             <!-- Modal Edit Mahasiswa -->
@@ -376,12 +382,155 @@
 
 
                     <!-- Modal Edit Mahasiswa -->
-                    <div class="modal fade" id="editMahasiswaModal{{ $mahasiswa->id }}" tabindex="-1"
+                    @foreach ($allmahasiswa as $mahasiswa)
+                        <div class="modal fade" id="editMahasiswaModal{{ $mahasiswa->id }}" tabindex="-1"
+                            aria-labelledby="editMahasiswaModalLabel{{ $mahasiswa->id }}" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="editMahasiswaModalLabel{{ $mahasiswa->id }}">Edit
+                                            Mahasiswa</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <form action="{{ route('superadmin.mahasiswa.update', ['id' => $mahasiswa->id]) }}"
+                                        method="POST" enctype="multipart/form-data">
+                                        @csrf
+                                        @method('PUT')
+                                        <div class="modal-body">
+                                            <!-- Form untuk mengedit data mahasiswa -->
+                                            <div class="mb-3">
+                                                <div class="form-group">
+                                                    <label for="npm">NPM</label>
+                                                    <input type="text" class="form-control border-success"
+                                                        id="npm" name="npm"
+                                                        value="{{ old('npm', $mahasiswa->npm) }}" required>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="namalengkap">Nama Lengkap</label>
+                                                    <input type="text" class="form-control border-success"
+                                                        id="namalengkap" name="namalengkap"
+                                                        value="{{ old('namalengkap', $mahasiswa->namalengkap) }}"
+                                                        required>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="email">Email</label>
+                                                    <input type="email" class="form-control border-success"
+                                                        id="email" name="email"
+                                                        value="{{ old('email', $mahasiswa->email) }}" required>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="jk">Jenis Kelamin</label>
+                                                    <select class="form-control border-success" id="jk"
+                                                        name="jk" required>
+                                                        <option value="Laki - Laki"
+                                                            {{ $mahasiswa->jk === 'Laki - Laki' ? 'selected' : '' }}>Laki -
+                                                            Laki</option>
+                                                        <option value="Wanita"
+                                                            {{ $mahasiswa->jk === 'Wanita' ? 'selected' : '' }}>Wanita
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="nohp">Nomor HP</label>
+                                                    <input type="text" class="form-control border-success"
+                                                        id="nohp" name="nohp"
+                                                        value="{{ old('nohp', $mahasiswa->nohp) }}" required>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="alamat">Alamat</label>
+                                                    <textarea class="form-control border-success" id="alamat" name="alamat" rows="3" required>{{ old('alamat', $mahasiswa->alamat) }}</textarea>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="fakultas">Fakultas</label>
+                                                    <input type="text" class="form-control border-success"
+                                                        id="fakultas" name="fakultas"
+                                                        value="{{ old('fakultas', $mahasiswa->fakultas) }}" required>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="jurusan">Jurusan</label>
+                                                    <input type="text" class="form-control border-success"
+                                                        id="jurusan" name="jurusan"
+                                                        value="{{ old('jurusan', $mahasiswa->jurusan) }}" required>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="gambar">Gambar</label>
+                                                    <input type="file" class="form-control-file" id="gambar"
+                                                        name="gambar">
+                                                </div>
+
+                                            </div>
+                                            <!-- Tambahkan input lainnya sesuai dengan atribut yang ingin diubah -->
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-primary">Update Data</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="modal fade" id="aktif{{ $mahasiswa->id }}" tabindex="-1"
+                            aria-labelledby="editMahasiswaModalLabel{{ $mahasiswa->id }}" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="editMahasiswaModalLabel{{ $mahasiswa->id }}">Aktifkan
+                                            Mahasiswa</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <form action="{{ route('superadmin.mahasiswa.aktif', ['id' => $mahasiswa->id]) }}"
+                                        method="POST" enctype="multipart/form-data">
+                                        @csrf
+                                        @method('PUT')
+                                        <div class="modal-body">
+                                            <!-- Form untuk mengedit data mahasiswa -->
+                                            <div class="mb-3">
+                                                <div class="form-group">
+                                                    <input type="text" class="form-control"
+                                                        value="{{ $mahasiswa->npm }}" readonly>
+
+                                                </div>
+                                                <div class="form-group">
+                                                    <input type="text" class="form-control"
+                                                        value="{{ $mahasiswa->namalengkap }}" readonly>
+
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="status">Status</label>
+                                                    <select class="form-control" id="status" name="aktif">
+                                                        <option value="1"
+                                                            {{ $mahasiswa->status == '1' ? 'selected' : '' }}>Aktif
+                                                        </option>
+                                                        <option value="0"
+                                                            {{ $mahasiswa->status == '0' ? 'selected' : '' }}>
+                                                            Tidak Aktif</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <!-- Tambahkan input lainnya sesuai dengan atribut yang ingin diubah -->
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-primary">Aktifkan Mahasiswa</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+
+                    {{-- <div class="modal fade" id="aktif{{ $mahasiswa->id }}" tabindex="-1"
                         aria-labelledby="editMahasiswaModalLabel{{ $mahasiswa->id }}" aria-hidden="true">
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="editMahasiswaModalLabel{{ $mahasiswa->id }}">Edit
+                                    <h5 class="modal-title" id="editMahasiswaModalLabel{{ $mahasiswa->id }}">Aktifkan
                                         Mahasiswa</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                                         aria-label="Close"></button>
@@ -394,60 +543,12 @@
                                         <!-- Form untuk mengedit data mahasiswa -->
                                         <div class="mb-3">
                                             <div class="form-group">
-                                                <label for="npm">NPM</label>
-                                                <input type="text" class="form-control border-success" id="npm"
-                                                    name="npm" value="{{ old('npm', $mahasiswa->npm) }}" required>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="namalengkap">Nama Lengkap</label>
-                                                <input type="text" class="form-control border-success"
-                                                    id="namalengkap" name="namalengkap"
-                                                    value="{{ old('namalengkap', $mahasiswa->namalengkap) }}" required>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="email">Email</label>
-                                                <input type="email" class="form-control border-success" id="email"
-                                                    name="email" value="{{ old('email', $mahasiswa->email) }}"
-                                                    required>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="jk">Jenis Kelamin</label>
-                                                <select class="form-control border-success" id="jk" name="jk"
-                                                    required>
-                                                    <option value="Laki - Laki"
-                                                        {{ $mahasiswa->jk === 'Laki - Laki' ? 'selected' : '' }}>Laki -
-                                                        Laki</option>
-                                                    <option value="Wanita"
-                                                        {{ $mahasiswa->jk === 'Wanita' ? 'selected' : '' }}>Wanita</option>
+                                                <label for="status">Status</label>
+                                                <select class="form-control" id="status" name="status">
+                                                    <option value="Aktif" {{ $mahasiswa->status == 'Aktif' ? 'selected' : '' }}>Aktif</option>
+                                                    <option value="Tidak Aktif" {{ $mahasiswa->status == 'Tidak Aktif' ? 'selected' : '' }}>Tidak Aktif</option>
                                                 </select>
                                             </div>
-                                            <div class="form-group">
-                                                <label for="nohp">Nomor HP</label>
-                                                <input type="text" class="form-control border-success" id="nohp"
-                                                    name="nohp" value="{{ old('nohp', $mahasiswa->nohp) }}" required>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="alamat">Alamat</label>
-                                                <textarea class="form-control border-success" id="alamat" name="alamat" rows="3" required>{{ old('alamat', $mahasiswa->alamat) }}</textarea>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="fakultas">Fakultas</label>
-                                                <input type="text" class="form-control border-success" id="fakultas"
-                                                    name="fakultas" value="{{ old('fakultas', $mahasiswa->fakultas) }}"
-                                                    required>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="jurusan">Jurusan</label>
-                                                <input type="text" class="form-control border-success" id="jurusan"
-                                                    name="jurusan" value="{{ old('jurusan', $mahasiswa->jurusan) }}"
-                                                    required>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="gambar">Gambar</label>
-                                                <input type="file" class="form-control-file" id="gambar"
-                                                    name="gambar">
-                                            </div>
-
                                         </div>
                                         <!-- Tambahkan input lainnya sesuai dengan atribut yang ingin diubah -->
                                     </div>
@@ -459,11 +560,14 @@
                                 </form>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
 
 
                 </div>
             </div>
+
+
+
         </div>
         <!-- div fb Start -->
     </div>
@@ -510,6 +614,16 @@
             });
         });
     </script>
+
+    <script>
+        $(document).ready(function() {
+            $('.save-btn').click(function() {
+                var formId = $(this).data('form-id');
+                $('#editForm' + formId).submit();
+            });
+        });
+    </script>
+
 
 
     <script src="/admin/js/plugins/fslightbox.js" defer></script>

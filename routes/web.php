@@ -3,13 +3,14 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\superadmin\DplController;
 use App\Http\Controllers\Mahasiswa\LoginController;
+use App\Http\Controllers\Mahasiswa\TugasController;
 use App\Http\Controllers\SuperAdmin\DosenController;
 use App\Http\Controllers\SuperAdmin\LokasiController;
 use App\Http\Controllers\Mahasiswa\DashboardContoller;
-use App\Http\Controllers\SuperAdmin\BuktiPembayaranController;
 use App\Http\Controllers\SuperAdmin\KelompokController;
 use App\Http\Controllers\SuperAdmin\MahasiswaController;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
+use App\Http\Controllers\SuperAdmin\BuktiPembayaranController;
 use App\Http\Controllers\SuperAdmin\LoginSuperAdminController;
 use App\Http\Controllers\SuperAdmin\DashboardSuperAdminController;
 
@@ -37,8 +38,11 @@ Route::middleware(['auth:web', 'preventBackHistory'])->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
     Route::get('/dashboard', [DashboardContoller::class, 'index'])->name('dashboard');
     Route::get('/pengumuman', [DashboardContoller::class, 'pengumuman'])->name('pengumuman');
+    Route::get('/tugas', [TugasController::class, 'index'])->name('tugas');
+    Route::post('/tugas/simpan', [TugasController::class, 'store'])->name('tugas.simpan');
     // Route::get('/edit-profil', [DashboardContoller::class, 'edit'])->name('edit-profil');
     Route::put('/profil-update/{id}', [DashboardContoller::class, 'update'])->name('profil-update');
+    Route::get('/update-status/{id}', [TugasController::class, 'updateStatus'])->name('updateStatus');
 });
 
 Route::prefix('superadmin')
@@ -61,6 +65,7 @@ Route::prefix('superadmin')
 
             Route::delete('/mahasiswa/{id}', [MahasiswaController::class, 'destroy'])->name('mahasiswa.delete');
             Route::put('/mahasiswa/{id}', [MahasiswaController::class, 'update'])->name('mahasiswa.update');      
+            Route::put('/mahasiswa/aktif/{id}', [MahasiswaController::class, 'aktif'])->name('mahasiswa.aktif');      
             Route::get('/cetak-pdf/{id}', [MahasiswaController::class, 'cetakPDF'])->name('cetak.pdf');
 
             Route::get('/dosen', [DosenController::class, 'index'])->name('dosen');
@@ -98,6 +103,9 @@ Route::prefix('superadmin')
             Route::get('/kelompok/{nokelompok}/edit', [KelompokController::class, 'edit'])->name('kelompok.edit');
             // Route::put('/kelompok/{nokelompok}', [KelompokController::class, 'update'])->name('kelompok.update');
             Route::put('/kelompok/update/{nokelompok}', [KelompokController::class, 'update'])->name('kelompok.update');
+            
+            Route::get('/cari-dosen', [KelompokController::class, 'cariDosen'])->name('cari.dosen');
+            Route::get('/cari-lokasi', [KelompokController::class, 'cariLokasi'])->name('cari.lokasi');
 
             Route::get('/kelompok/searchedit', [KelompokController::class, 'searchedit'])->name('kelompok.searchedit');
             Route::delete('/kelompok/{nokelompok}', [KelompokController::class, 'destroy'])->name('kelompok.delete');

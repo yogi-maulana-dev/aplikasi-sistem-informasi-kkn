@@ -34,6 +34,9 @@
             text-align: left;
             border-top: none;
             border-bottom: none;
+            font-size: 14px;
+            
+            /* border: 1px solid black; */
         }
 
         th {
@@ -74,6 +77,13 @@
             text-align: center;
             line-height: 15px;
         }
+
+        .ttd {
+            float: right;
+            width: 250px;
+            background-position: center;
+            background-size: contain;
+        }
     </style>
 </head>
 
@@ -96,39 +106,62 @@
 
 
         <table>
-
             <tr>
-                <th>Nama Lengkap</th>
-                <td>John Doe</td>
-                <td rowspan="7" align="center"><img class="photo"
-                        src="https://pusatkarir.polije.ac.id/assets/foto/17_E41171308.jpg" width="150" height="200"
+                <th>Nomor Pokok Mahasiswa</th>
+                <td>{{ $mahasiswa->npm }}</td>
+                <td rowspan="9" align="center"><img class="photo"
+                        src="{{ $mahasiswa->gambar }}" width="150" height="200"
                         alt="Foto Biodata"></td>
             </tr>
             <tr>
-                <th>Tempat Tanggal Lahir</th>
-                <td>Jakarta, 1 Januari 1990</td>
-            </tr>
-            <tr>
-                <th>Alamat</th>
-                <td>Jl. Pahlawan No. 123, Jakarta</td>
+                <th>Nama Lengkap</th>
+                <td>{{ $mahasiswa->namalengkap }}</td>
             </tr>
             <tr>
                 <th>Email</th>
-                <td>john.doe@example.com</td>
+                <td>{{ $mahasiswa->email }}</td>
             </tr>
             <tr>
-                <th>No. Telepon</th>
-                <td>081234567890</td>
+                <th>Jenis Kelamin</th>
+                <td>{{ $mahasiswa->jk }}</td>
             </tr>
             <tr>
-                <th>Pendidikan Terakhir</th>
-                <td>S1 Teknik Informatika, Universitas ABC</td>
+                <th>No. Telepon / HP</th>
+                <td>{{ $mahasiswa->nohp }}</td>
             </tr>
             <tr>
-                <th>Pekerjaan</th>
-                <td>Software Engineer</td>
+                <th>Fakultas</th>
+                <td>{{ $mahasiswa->fakultas }}</td>
+            </tr>
+            <tr>
+                <th>Jurusan</th>
+                <td>{{ $mahasiswa->jurusan }}</td>
+            </tr>
+            <tr>
+                <th>Alamat</th>
+                <td>{{ $mahasiswa->alamat }}</td>
+            </tr>
+            <tr>
+                <th>Size Ukuran Baju</th>
+                <td>{{ $mahasiswa->sizebaju }}</td>
+            </tr>
+            <tr>
+                <th>Bukti Pembayaran</th>
+                <td colspan="2"> <img src="{{ $mahasiswa->gambarbayar }}" alt="Bukti Pembayaran" width="480" height="300"></td>
             </tr>
         </table>
+
+        <table width="450" align="right" class="ttd">
+            <tr>
+                <td width="100px" style="padding:20px;" align="center">
+                    <strong>projectyai.com,</strong>
+                    <br><br><br><br>
+                    <br><br>
+                    <strong><u>TTD</u><br></strong><small></small>
+                </td>
+            </tr>
+        </table>
+
     </div>
 </body>
 

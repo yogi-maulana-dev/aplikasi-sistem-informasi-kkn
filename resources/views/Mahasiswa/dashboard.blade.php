@@ -32,7 +32,7 @@
                                     </div>
                                     <div class="d-flex flex-wrap align-items-center mb-3 mb-sm-0">
                                         <h4 class="me-2 h4">{{ Auth::guard('web')->user()->namalengkap }}</h4>
-                                        <span> - Web Developer</span>
+                                 
                                     </div>
                                 </div>
                                 <ul class="d-flex nav nav-pills mb-0 text-center profile-tab" data-toggle="slider-tab"
@@ -62,14 +62,14 @@
                             <div class="card">
                                 <div class="card-header d-flex justify-content-between">
                                     <div class="header-title">
-                                        <h4 class="card-title">Activity</h4>
+                                        <h4 class="card-title">Pengumuman</h4>
                                     </div>
                                 </div>
                                 <div class="card-body">
                                     <div
                                         class="iq-timeline0 m-0 d-flex align-items-center justify-content-between position-relative">
                                         <ul class="list-inline p-0 m-0">
-                                            <li>
+                                            {{-- <li>
                                                 <div class="timeline-dots timeline-dot1 border-primary text-primary">
                                                 </div>
                                                 <h6 class="float-left mb-1">Client Login</h6>
@@ -124,7 +124,7 @@
                                                 <div class="d-inline-block w-100">
                                                     <p>Bonbon macaroon jelly beans gummi bears jelly lollipop apple</p>
                                                 </div>
-                                            </li>
+                                            </li> --}}
                                         </ul>
                                     </div>
                                 </div>

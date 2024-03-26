@@ -113,15 +113,17 @@
                                                 <td>{{ $kelompok->mahasiswa->namalengkap }}</td>
 
                                                 <td>
-                                                    <a href="{{ route('superadmin.kelompok.edit', ['nokelompok' => $kelompok->nokelompok]) }}" class="btn btn-primary">
+                                                    <a href="{{ route('superadmin.kelompok.edit', ['nokelompok' => $kelompok->nokelompok]) }}"
+                                                        class="btn btn-primary">
                                                         Edit
-                                                    </a>  <form
-                                                            action="{{ route('superadmin.kelompok.delete', ['nokelompok' => $kelompok->nokelompok]) }}"
-                                                            method="POST" style="display: inline;"> 
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger"
-                                                        onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">Hapus</button>
+                                                    </a>
+                                                    <form
+                                                        action="{{ route('superadmin.kelompok.delete', ['nokelompok' => $kelompok->nokelompok]) }}"
+                                                        method="POST" style="display: inline;">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn btn-danger"
+                                                            onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">Hapus</button>
                                                     </form>
 
 
@@ -199,6 +201,35 @@
                                         </div>
                                     </div>
 
+                                    <div class="col-sm-6">
+
+                                        <div class="form-group">
+                                            <label class="form-label" for="dosen">Dosen Pembimbing</label>
+                                            <select name="dosen" class="form-select border-success" id="dosen">
+                                                <option value="">Pilih dosen</option>
+                                            </select>
+                                            @error('dosen')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="form-label" for="lokasi"> Lokasi (NIP / DESA)</label>
+                                            <select id="lokasi" name="lokasi" class="form-control select2">
+                                                <option value="">Pilih Lokasi</option>
+                                            </select>
+
+                                            @error('lokasi')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>
+
+                                    </div>
+
                                     <div class="col-sm-12 text-center">
                                         <button type="submit" class="btn btn-primary">Simpan</button>
                                         <button type="button" class="btn btn-danger">Batal</button>
@@ -213,7 +244,7 @@
 
 
                     <!-- Modal Edit kelompok -->
-                 
+
 
                 </div>
             </div>
@@ -221,12 +252,63 @@
         <!-- div fb Start -->
     </div>
 
-
-
-
     <!-- Footer Section Start -->
 
     @include('tampilan_superadmin.javascript')
+
+
+    <script>
+        $(document).ready(function() {
+            $('#dosen').select2({
+                placeholder: 'Pilih dosen',
+                allowClear: true,
+                width: '100%', // Sesuaikan lebar select dengan kebutuhan Anda
+                ajax: {
+                    url: '{{ route('superadmin.cari.dosen') }}',
+                    dataType: 'json',
+                    delay: 250,
+                    processResults: function(data) {
+                        return {
+                            results: $.map(data, function(dosen) {
+                                return {
+                                    id: dosen.nip,
+                                    text: dosen.nip + ' / ' + dosen.nama
+                                };
+                            })
+                        };
+                    },
+                    cache: true
+                }
+            });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            $('#lokasi').select2({
+                placeholder: 'Pilih lokasi',
+                allowClear: true,
+                width: '100%', // Sesuaikan lebar select dengan kebutuhan Anda
+                ajax: {
+                    url: '{{ route('superadmin.cari.lokasi') }}',
+                    dataType: 'json',
+                    delay: 250,
+                    processResults: function(data) {
+                        return {
+                            results: $.map(data, function(lokasi) {
+                                return {
+                                    id: lokasi.desa,
+                                    text: lokasi.nip + ' - ' + lokasi.village_name
+                                };
+                            })
+                        };
+                    },
+                    cache: true
+                }
+            });
+        });
+    </script>
+
     <script>
         $(document).ready(function() {
             // Inisialisasi select2 untuk elemen yang ada saat halaman dimuat
@@ -263,10 +345,10 @@
         function tambahMahasiswa() {
             let jumlahMahasiswa = $('[id^="npm"]').length + 1; // Hitung jumlah elemen select yang ada
             if (jumlahMahasiswa <= 10) { // Batasi jumlah mahasiswa
-                let label = jumlahMahasiswa === 1 ? '<h5 class="text-warning">Ketua</h5>' :
+                let label = jumlahMahasiswa === 1 ? 'Ketua Kelompok' :
                     ''; // Label "Ketua" ditambahkan hanya untuk NPM pertama
                 let selectHTML = `<div class="form-group">
-                                <label class="form-label" for="npm${jumlahMahasiswa}">Nomor Pokok Mahasiswa ${jumlahMahasiswa} ${label}</label>
+                                <label class="form-label" for="npm${jumlahMahasiswa}">Nomor Pokok Mahasiswa ${jumlahMahasiswa} <b class="text-warning">(${label})</b></label>
                                 <select name="npm[]" id="npm${jumlahMahasiswa}"
                                     class="selectpicker form-select border-success @error('npm') is-invalid @enderror"
                                     data-live-search="true">
@@ -301,23 +383,20 @@
                     },
                 });
             } else {
-                alert('Maksimal 10 mahasiswa dalam satu kelompok.');
+                alert('Maksimal 15 mahasiswa dalam satu kelompok.');
             }
         }
 
         // Fungsi untuk menghapus elemen select dinamis
         function kurangiMahasiswa() {
             let jumlahMahasiswa = $('[id^="npm"]').length; // Hitung jumlah elemen select yang ada
-            if (jumlahMahasiswa > 5) { // Batasi jumlah mahasiswa
+            if (jumlahMahasiswa > 10) { // Batasi jumlah mahasiswa
                 $(`#npm${jumlahMahasiswa}`).parent().remove(); // Hapus elemen select terakhir
             } else {
-                alert('Minimal 5 mahasiswa dalam satu kelompok.');
+                alert('Minimal 10 mahasiswa dalam satu kelompok.');
             }
         }
     </script>
-
-
-
 
     <!-- Select2 Script -->
     {{-- <script src="/admin/js/plugins/select2.js" defer></script> --}}
