@@ -15,9 +15,9 @@ class SuperAdminSeeder extends Seeder
     {
         SuperAdmin::create([
             'namalengkap'	=> 'yogi maulana',
-            'email'	=> 'yogimaulana131@gmail.com',
+            'email'	=> 'yogimaulana1081@gmail.com',
             'nohp'	=> '089631031327',
-            'password'	=> bcrypt('projectyai.com')
+            'password'	=> bcrypt('pbiadmin1234')
     ]);
     }
 }

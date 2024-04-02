@@ -24,18 +24,27 @@ class TugasController extends Controller
             ->first();
     
         if ($kelompok) {
+            $tabungtugas = TabungTugas::where('kelompoktugas', $kelompok->nokelompok)
+                ->latest()
+                ->take(5)
+                ->get();
             // Jika kelompok ditemukan, ambil tugas yang terkait dengan kelompok tersebut
             $tugas = Tugas::where('kelompoktugas', $kelompok->nokelompok)
                 ->get();
     
             // Kirim data tugas ke view
-            return view('Mahasiswa.tugas', compact('tugas'));
+            return view('Mahasiswa.tugas', compact('tugas', 'tabungtugas'));
         } else {
             // Jika kelompok tidak ditemukan, kirim pesan kosong ke view
-            $tugas = collect(); // Buat koleksi kosong
-            return view('Mahasiswa.tugas', compact('tugas'))->with('message', 'Anda belum tergabung dalam kelompok.');
+            return redirect()->route('peringatan')->with('error', 'Anda belum menjadi ketua kelompok, jika belum silakan hubungi admin.');
         }
     }
+
+    public function peringatan(){
+        return view('Mahasiswa.peringatan');
+    }
+    
+    
 
     /**
      * Show the form for creating a new resource.

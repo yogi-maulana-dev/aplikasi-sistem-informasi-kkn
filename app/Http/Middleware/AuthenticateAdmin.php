@@ -6,7 +6,7 @@ use Illuminate\Auth\Middleware\Authenticate as Middleware;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Closure;
-class AuthenticateAdmin extends Middleware
+class AuthenticateDosen extends Middleware
 {
     // public function handle($request, Closure $next)
     // {
@@ -16,11 +16,11 @@ class AuthenticateAdmin extends Middleware
     public function handle($request, Closure $next, ...$guards)
     {
 
-        if (Auth::guard('admin')->check()) {
+        if (Auth::guard('dosen')->check()) {
             return $next($request);
         }
 
-        return redirect()->route('admin.login')->with('error', 'Admin: Anda perlu masuk terlebih dahulu.');
+        return redirect()->route('dosen.login')->with('error', 'Dosen: Anda perlu masuk terlebih dahulu.');
         // Your middleware logic here
     }
 

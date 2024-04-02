@@ -71,14 +71,14 @@
 
                             <div class="card-body">
                                 @if ($errors->any())
-                                <div class="alert alert-danger mt-3">
-                                    <ul>
-                                        @foreach ($errors->all() as $error)
-                                            <li>{{ $error }}</li>
-                                        @endforeach
-                                    </ul>
-                                </div>
-                            @endif
+                                    <div class="alert alert-danger mt-3">
+                                        <ul>
+                                            @foreach ($errors->all() as $error)
+                                                <li>{{ $error }}</li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                @endif
                                 <div class="d-flex align-items-center justify-content-between position-relative">
                                     @if (!$tugas->isEmpty())
                                         <!-- Tampilkan formulir untuk mengupload tugas -->
@@ -91,41 +91,97 @@
                                         </div>
                                         <!-- Tambahkan skrip JavaScript untuk menghitung waktu mundur -->
                                     @else
-                                        <div class="col-lg-12">
-                                            <form action="{{ route('tugas.simpan') }}" method="post"
-                                                enctype="multipart/form-data">
-                                                @csrf
-                                                <div class="form-group">
-                                                    <label for="gambar" class="form-label custom-file-input">Upload Foto
-                                                        Kegiatan</label>
-                                                    <input
-                                                        class="form-control border-success @error('gambar') is-invalid @enderror"
-                                                        name="gambar" type="file" id="gambar">
-                                                    @error('gambar')
-                                                        <span class="invalid-feedback" role="alert">
-                                                            <strong>{{ $message }}</strong>
-                                                        </span>
-                                                    @enderror
-                                                </div>
+                         
+                                            <div class="col-lg-12">
+                                                <form action="{{ route('tugas.simpan') }}" method="post"
+                                                    enctype="multipart/form-data">
+                                                    @csrf
+                                                    <div class="form-group">
+                                                        <label for="gambar" class="form-label custom-file-input">Upload
+                                                            Foto
+                                                            Kegiatan</label>
+                                                        <input
+                                                            class="form-control border-success @error('gambar') is-invalid @enderror"
+                                                            name="gambar" type="file" id="gambar">
+                                                        @error('gambar')
+                                                            <span class="invalid-feedback" role="alert">
+                                                                <strong>{{ $message }}</strong>
+                                                            </span>
+                                                        @enderror
+                                                    </div>
 
-                                                <div class="form-group">
-                                                    <textarea class="form-control border-success @error('keterangan') is-invalid @enderror" name="keterangan"
-                                                        id="exampleFormControlTextarea1" cols="120" rows="10"></textarea>
-                                                    @error('keterangan')
-                                                        <span class="invalid-feedback" role="alert">
-                                                            <strong>{{ $message }}</strong>
-                                                        </span>
-                                                    @enderror
-                                                </div>
+                                                    <div class="form-group">
+                                                        <textarea class="form-control border-success @error('keterangan') is-invalid @enderror" name="keterangan"
+                                                            id="exampleFormControlTextarea1" cols="120" rows="10"></textarea>
+                                                        @error('keterangan')
+                                                            <span class="invalid-feedback" role="alert">
+                                                                <strong>{{ $message }}</strong>
+                                                            </span>
+                                                        @enderror
+                                                    </div>
 
-                                                <button type="submit" class="btn bg-success text-white">Upload
-                                                    Tugas</button>
-                                            </form>
-                                        </div>
+                                                    <button type="submit" class="btn bg-success text-white">Upload
+                                                        Tugas</button>
+                                                </form>
+                                            </div>
+                                   
                                     @endif
                                 </div>
                             </div>
                         </div>
+
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between">
+                                <div class="header-title">
+                                    <h4 class="card-title text-success">Tugas yang sudah dilakukan ?
+                                    </h4>
+                                </div>
+                            </div>
+
+                            <div class="card-body">
+                                <div
+                                    class="iq-timeline0 m-0 d-flex align-items-center justify-content-between position-relative">
+                                    <ul class="list-inline p-0 m-0">
+                                        {{-- Periksa apakah ada data tabungtugas --}}
+                                        @if ($tabungtugas->isNotEmpty())
+                                            {{-- Tampilkan tanggal hari pertama --}}
+                                            <li>
+                                                <div class="timeline-dots timeline-dot1 border-primary text-primary">
+                                                </div>
+                                                <h6 class="float-left mb-1">Hari 1</h6>
+                                                <small
+                                                    class="float-right mt-1">{{ $tabungtugas->first()->created_at->format('d F Y') }}</small>
+                                                <div class="d-inline-block w-100">
+                                                    <p>{{ $tabungtugas->first()->tugas }}</p>
+                                                </div>
+                                            </li>
+
+                                            {{-- Tampilkan tanggal-tanggal berikutnya --}}
+                                            @foreach ($tabungtugas as $key => $tabungtugasx)
+                                                @if ($key > 0)
+                                                    <li>
+                                                        <div
+                                                            class="timeline-dots timeline-dot1 border-primary text-primary">
+                                                        </div>
+                                                        <h6 class="float-left mb-1">Hari {{ $key + 1 }}</h6>
+                                                        <small
+                                                            class="float-right mt-1">{{ $tabungtugasx->created_at->addDays($key)->format('d F Y') }}</small>
+                                                        <div class="d-inline-block w-100">
+                                                            <p>{{ $tabungtugasx->tugas }}</p>
+                                                        </div>
+                                                    </li>
+                                                @endif
+                                            @endforeach
+                                        @else
+                                            {{-- Tampilkan pesan jika tidak ada data tabungtugas --}}
+                                            <li>Data tidak tersedia.</li>
+                                        @endif
+                                    </ul>
+
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
 
                     <div id="profile-profile" class="tab-pane fade">
@@ -193,18 +249,18 @@
         @foreach ($tugas as $tugasx)
             // Ambil waktu tugas dibuat
             var created_at = new Date("{{ $tugasx->created_at }}");
-    
+
             // Set waktu target (23:59:00)
             var deadline = new Date(created_at);
             deadline.setHours(23);
             deadline.setMinutes(59);
             deadline.setSeconds(30);
-    
+
             // Update status dan tampilkan waktu mundur menggunakan JavaScript
             var interval = setInterval(function() {
                 var now = new Date();
                 var difference = deadline - now;
-    
+
                 if (difference <= 0) {
                     // Waktu habis, update status dan hentikan interval
                     clearInterval(interval);
@@ -222,12 +278,12 @@
                 } else {
                     // Hitung sisa waktu mundur
                     var remainingTime = new Date(difference);
-    
+
                     // Ambil jam, menit, dan detik dari sisa waktu mundur
                     var hours = remainingTime.getUTCHours();
                     var minutes = remainingTime.getUTCMinutes();
                     var seconds = remainingTime.getUTCSeconds();
-    
+
                     // Format output waktu mundur
                     var displayTime = hours + " jam " + minutes + " menit " + seconds + " detik ";
                     $("#waktuMundur").text(displayTime);
@@ -235,9 +291,9 @@
             }, 1000);
         @endforeach
     </script>
-    
-    
-    
+
+
+
 
 
     <!-- Footer Section Start -->

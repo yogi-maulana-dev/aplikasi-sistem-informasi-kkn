@@ -41,6 +41,10 @@ return [
             'provider' => 'users',
         ],
 
+        'dosen' => [
+            'driver' => 'session',
+            'provider' => 'dosens',
+        ],
         'superadmin' => [
             'driver' => 'session',
             'provider' => 'superadmins',
@@ -70,6 +74,10 @@ return [
             'model' => App\Models\Mahasiswa::class,
         ],
 
+        'dosens' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Dosen::class,
+            ],
         'superadmins' => [
             'driver' => 'eloquent',
             'model' => App\Models\SuperAdmin::class,

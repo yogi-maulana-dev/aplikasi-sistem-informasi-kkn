@@ -7,6 +7,7 @@
 @yield('dashboard')
 @yield('tugas')
 @yield('profil')
+@yield('peringatan')
 @yield('edit-profil')
 @include('tampilan_mhs.modal')
 @include('tampilan_mhs.footer')

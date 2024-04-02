@@ -8,10 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Contracts\Auth\Authenticatable; // Import kontrak Authenticatable
+use Illuminate\Database\Eloquent\SoftDeletes;
+ 
 
 class Mahasiswa extends Model implements Authenticatable // Implementasi kontrak Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, Sigerprojectuuid;
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes,Sigerprojectuuid;
 
     protected $table = 'mahasiswas';
 
@@ -88,5 +90,10 @@ class Mahasiswa extends Model implements Authenticatable // Implementasi kontrak
         return 'remember_token';
     }
 
+
+    public function kelompok()
+    {
+        return $this->belongsTo(Kelompok::class, 'npm', 'npm');
+    }
 
 }

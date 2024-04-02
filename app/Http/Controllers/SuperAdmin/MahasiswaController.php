@@ -7,6 +7,7 @@ use App\Models\Falkultas;
 use App\Models\Mahasiswa;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Kelompok;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use PDF;
@@ -153,12 +154,19 @@ class MahasiswaController extends Controller
                 'npm' => 'required|unique:mahasiswas,npm,'.$id,
                 'namalengkap' => 'required',
                 'email' => 'required|email|unique:mahasiswas,email,'.$id,
-                'jk' => 'required|in:Laki - Laki,Wanita',
-                'nohp' => 'required|numeric',
-                'alamat' => 'required',
-                'fakultas' => 'required',
-                'jurusan' => 'required',
-                'gambar' => 'image|mimes:jpeg,png,jpg,gif|max:2048', // validasi untuk gambar
+                'jk' => 'required|string|max:255',
+                'nohp' => 'required|string|max:255',
+                'gambar' => 'required|image|max:5204', // Ubah sesuai kebutuhan Anda
+                'gambarbayar' => 'required|image|max:5204', // Ubah sesuai kebutuhan Anda
+                'alamat' => 'required|string|max:255',
+                'tempat' => 'required|string|max:255',
+                'tgllahir' => 'required|date',
+                'fakultas' => 'required|string|max:255',
+                'jurusan' => 'required|string|max:255',
+                'sizebaju' => 'required|string|max:255',
+                // 'password' => 'required|string|min:8|confirmed',
+                // 'password_confirmation' => 'required|string|min:8',
+                'kelas' => 'required|string|in:a,b', // validasi untuk gambar
             ],
             [
                 'npm.required' => 'Nomor Pokok Mahasiswa wajib diisi',
@@ -176,11 +184,18 @@ class MahasiswaController extends Controller
                 'nohp.required' => 'Nomor handphone wajib diisi',
                 'nohp.numeric' => 'Nomor handphone harus berupa angka',
                 'alamat.required' => 'Alamat wajib diisi',
+                'tempat.max' => 'Tempat lahir tidak boleh melebihi 255 karakter',
+                'tgllahir.required' => 'Tanggal lahir wajib diisi',
                 'fakultas.required' => 'Fakultas wajib dipilih',
                 'jurusan.required' => 'Jurusan wajib dipilih',
-                'gambar.image' => 'File harus berupa gambar',
-                'gambar.mimes' => 'Format gambar harus jpeg, png, jpg, atau gif',
-                'gambar.max' => 'Ukuran gambar maksimal 2MB',
+                'gambar.image' => 'File harus berupa Foto',
+                'gambar.mimes' => 'Format Foto harus jpeg, png, jpg, atau gif',
+                'gambar.max' => 'Ukuran foto maksimal 5MB',
+                'gambarbayar.image' => 'File harus berupa Bukti Pembayaran',
+                'gambarbayar.mimes' => 'Format Bukti Pembayaran harus jpeg, png, jpg, atau gif',
+                'gambarbayar.max' => 'Ukuran Bukti Pembayaran maksimal 5MB',
+                'kelas.required' => 'Kelas wajib dipilih',
+                'kelas.in' => 'Pilih kelas yang tersedia',
             ]
         );
 
@@ -197,6 +212,8 @@ class MahasiswaController extends Controller
         $mahasiswa->alamat = $request->input('alamat');
         $mahasiswa->fakultas = $request->input('fakultas');
         $mahasiswa->jurusan = $request->input('jurusan');
+        $mahasiswa->tgllahir =$request->input('tgllahir');
+        $mahasiswa->tempat = $request->input('tempat');
 
         // Upload gambar (jika ada)
         if ($request->hasFile('gambar')) {
@@ -214,6 +231,22 @@ class MahasiswaController extends Controller
             $lokasi = public_path('uploads/mahasiswa');
             $gambar->move($lokasi, $nama_gambar);
             $mahasiswa->gambar = 'uploads/mahasiswa/' . $nama_gambar;
+        }
+
+        if ($request->hasFile('gambarbayar')) {
+
+            if ($mahasiswa->gambarbayar) {
+                if (file_exists(public_path($mahasiswa->gambarbayar))) {
+                    unlink(public_path($mahasiswa->gambarbayar));
+                }
+            }
+
+            $gambarbayar = $request->file('gambarbayar');
+            $npm = $request->input('npm'); // Mengambil NPM dari input form
+            $nama_gambarbayar = $npm . '_' . time() . '.' . $gambarbayar->getClientOriginalExtension(); // Menambahkan NPM ke nama gambarbayar
+            $lokasi = public_path('uploads/mahasiswa/bukti');
+            $gambarbayar->move($lokasi, $nama_gambarbayar);
+            $mahasiswa->gambarbayar = 'uploads/mahasiswa/bukti/' . $nama_gambarbayar;
         }
         
 
@@ -254,7 +287,16 @@ class MahasiswaController extends Controller
      */
     public function destroy($id)
     {
-        $mahasiswa = Mahasiswa::findOrFail($id); // Pindahkan baris ini ke atas pengecekan apakah gambar tersedia atau tidak
+        $mahasiswa = Mahasiswa::findOrFail($id);
+        
+        // Periksa apakah mahasiswa memiliki kelompok terkait
+        if ($mahasiswa->kelompok) {
+            // Temukan kelompok dengan npm yang sesuai
+            $kelompok = Kelompok::where('npm', $mahasiswa->kelompok->npm)->first();
+            if ($kelompok) {
+                return redirect()->back()->with('error', 'Tidak dapat menghapus mahasiswa dengan nomor pokok mahasiswa '.$mahasiswa->kelompok->npm.' karena data npm masih terhubung pada menu kelompok.');
+            }
+        }
     
         // Periksa apakah file gambar tersedia
         if ($mahasiswa->gambar && file_exists(public_path($mahasiswa->gambar))) {
@@ -265,6 +307,10 @@ class MahasiswaController extends Controller
     
         return redirect()->back()->with('success', 'Data mahasiswa berhasil dihapus.');
     }
+    
+    
+    
+    
 
     public function cetakPDF($id)
 {

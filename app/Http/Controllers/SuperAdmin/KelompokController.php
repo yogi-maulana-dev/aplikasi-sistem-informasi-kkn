@@ -9,6 +9,7 @@ use App\Models\Kelompok;
 use App\Models\Mahasiswa;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\TabungTugas;
 
 class KelompokController extends Controller
 {
@@ -216,6 +217,7 @@ public function destroy($nokelompok)
     try {
             // Hapus semua data kelompok dengan nokelompok yang sesuai
             Kelompok::where('nokelompok', $nokelompok)->delete();
+            TabungTugas::where('kelompoktugas', $nokelompok)->delete();
 
             // Redirect kembali ke halaman yang sesuai setelah berhasil menghapus
             return redirect()->route('superadmin.kelompok')->with('success', 'Data kelompok dengan nokelompok '.$nokelompok.' berhasil dihapus.');

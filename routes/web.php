@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\superadmin\DplController;
 use App\Http\Controllers\Mahasiswa\LoginController;
 use App\Http\Controllers\Mahasiswa\TugasController;
+use App\Http\Controllers\Dosen\LoginDosenController;
 use App\Http\Controllers\SuperAdmin\DosenController;
 use App\Http\Controllers\SuperAdmin\LokasiController;
 use App\Http\Controllers\Mahasiswa\DashboardContoller;
@@ -38,9 +39,10 @@ Route::middleware(['auth:web', 'preventBackHistory'])->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
     Route::get('/dashboard', [DashboardContoller::class, 'index'])->name('dashboard');
     Route::get('/pengumuman', [DashboardContoller::class, 'pengumuman'])->name('pengumuman');
+    Route::get('/peringatan', [TugasController::class, 'peringatan'])->name('peringatan');
     Route::get('/tugas', [TugasController::class, 'index'])->name('tugas');
     Route::post('/tugas/simpan', [TugasController::class, 'store'])->name('tugas.simpan');
-    // Route::get('/edit-profil', [DashboardContoller::class, 'edit'])->name('edit-profil');
+    Route::get('/edit-profil', [DashboardContoller::class, 'edit'])->name('edit-profil');
     Route::put('/profil-update/{id}', [DashboardContoller::class, 'update'])->name('profil-update');
     Route::get('/update-status/{id}', [TugasController::class, 'updateStatus'])->name('updateStatus');
 });
@@ -111,6 +113,25 @@ Route::prefix('superadmin')
             Route::delete('/kelompok/{nokelompok}', [KelompokController::class, 'destroy'])->name('kelompok.delete');
 
             Route::get('/dpl', [DplController::class, 'index'])->name('dpl');
+
+        });
+    });
+
+    Route::prefix('dosen')
+    ->name('dosen.')
+    ->group(function () {
+        Route::middleware(['guest:dosen', 'preventBackHistory'])->group(function () {
+            Route::get('/', [LoginDosenController::class, 'redirectToLogin']);
+
+            Route::get('/login', [LoginDosenController::class, 'index'])->name('login');
+            Route::post('/loginaction', [LoginDosenController::class, 'loginaction'])->name('loginaction');
+        });
+
+        Route::middleware(['auth:superadmin', 'preventBackHistory'])->group(function () {
+            Route::post('/logout', [LoginDosenController::class, 'logout'])->name('logout');
+            Route::get('/dashboard', [DashboardSuperAdminController::class, 'index'])->name('dashboard');
+
+        
 
         });
     });
