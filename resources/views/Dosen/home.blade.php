@@ -1,5 +1,5 @@
 @extends('tampilan_dosen.index')
-@section('dashboard')
+@section('home')
 <div class="content-inner container-fluid pb-0" id="page_layout">
     <div class="row">
         <div class="col-sm-12">
@@ -13,7 +13,7 @@
                 </div>
                 <div class="card-body">
                     <p class="mb-3">
-                     Dasboard Admin
+                     Dasboard Dosen
                     </p>
                 </div>
             </div>

@@ -4,8 +4,8 @@
 @include('tampilan_dosen.aside')
 @include('tampilan_dosen.nav')
 
-@yield('dashboard')
-@yield('tugas')
+@yield('home')
+@yield('kegiatan')
 @yield('profil')
 @yield('peringatan')
 @yield('edit-profil')

@@ -21,7 +21,7 @@ class RedirectIfAuthenticated
 
       foreach ($guards as $guard) {
 
-        if($guard == 'web' && Auth::guard($guard)->check()) {
+        if($guard == 'dosen' && Auth::guard($guard)->check()) {
           return redirect()->route('dashboard');
         }
         if($guard == 'superadmin' && Auth::guard($guard)->check()) {

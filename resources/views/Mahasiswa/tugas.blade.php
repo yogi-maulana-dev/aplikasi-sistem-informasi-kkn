@@ -252,8 +252,8 @@
 
             // Set waktu target (23:59:00)
             var deadline = new Date(created_at);
-            deadline.setHours(23);
-            deadline.setMinutes(59);
+            deadline.setHours(0);
+            deadline.setMinutes(0);
             deadline.setSeconds(30);
 
             // Update status dan tampilkan waktu mundur menggunakan JavaScript

@@ -1,7 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\superadmin\DplController;
+use App\Http\Controllers\Dosen\HomeController;
+use App\Http\Controllers\Dosen\KegiatanController;
+use App\Http\Controllers\SuperAdmin\DplController;
 use App\Http\Controllers\Mahasiswa\LoginController;
 use App\Http\Controllers\Mahasiswa\TugasController;
 use App\Http\Controllers\Dosen\LoginDosenController;
@@ -51,7 +53,7 @@ Route::prefix('superadmin')
     ->name('superadmin.')
     ->group(function () {
         Route::middleware(['guest:superadmin', 'preventBackHistory'])->group(function () {
-            Route::get('/', [LoginSuperAdminController::class, 'redirectToLogin']);
+            Route::get('/', [LoginSuperAdminController::class, 'index']);
 
             Route::get('/login', [LoginSuperAdminController::class, 'index'])->name('login');
             Route::post('/loginaction', [LoginSuperAdminController::class, 'loginaction'])->name('loginaction');
@@ -121,17 +123,19 @@ Route::prefix('superadmin')
     ->name('dosen.')
     ->group(function () {
         Route::middleware(['guest:dosen', 'preventBackHistory'])->group(function () {
-            Route::get('/', [LoginDosenController::class, 'redirectToLogin']);
+            Route::get('/', [LoginDosenController::class, 'index']);
 
             Route::get('/login', [LoginDosenController::class, 'index'])->name('login');
             Route::post('/loginaction', [LoginDosenController::class, 'loginaction'])->name('loginaction');
         });
 
-        Route::middleware(['auth:superadmin', 'preventBackHistory'])->group(function () {
+        Route::middleware(['auth:dosen', 'preventBackHistory'])->group(function () {
             Route::post('/logout', [LoginDosenController::class, 'logout'])->name('logout');
-            Route::get('/dashboard', [DashboardSuperAdminController::class, 'index'])->name('dashboard');
+            Route::get('/home', [HomeController::class, 'index'])->name('home');
 
-        
+            Route::get('/kegiatan', [KegiatanController::class, 'index'])->name('kegiatan');
+            Route::get('/kegiatan', [KegiatanController::class, 'index'])->name('kegiatan');
+            Route::put('/kegiatan/aktif/{id}', [KegiatanController::class, 'aktif'])->name('kegiatan.aktif');      
 
         });
     });

@@ -136,7 +136,7 @@
                                         </div>
                                     @endif
 
-                                    <form method="post" action="{{ route('loginaction') }}">
+                                    <form method="post" action="{{ route('dosen.loginaction') }}">
                                         {{ csrf_field() }}
                                         <div class="row">
                                             <div class="col-lg-12">

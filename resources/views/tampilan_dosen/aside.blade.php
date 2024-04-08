@@ -1,6 +1,6 @@
 <aside class="sidebar sidebar-base" id="first-tour" data-toggle="main-sidebar" data-sidebar="responsive">
         <div class="sidebar-header d-flex align-items-center justify-content-start">
-            <a href="{{ route('dashboard') }}" class="navbar-brand">
+            <a href="{{ route('dosen.home') }}" class="navbar-brand">
                 <!--Logo start-->
                 <div class="logo-main">
                     <div class="logo-normal">
@@ -54,20 +54,20 @@
                                 data-bs-placement="right">-</span>
                         </a>
                     </li>
-                    <li class="nav-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
-                        <a class="nav-link" aria-current="page" href="{{ route('dashboard') }}">
-                            <i class="icon" data-bs-toggle="tooltip" title="Dashboard" data-bs-placement="right">
+                    <li class="nav-item {{ request()->routeIs('dosen.home') ? 'active' : '' }}">
+                        <a class="nav-link" aria-current="page" href="{{ route('dosen.home') }}">
+                            <i class="icon" data-bs-toggle="tooltip" title="dosen.Dashboard" data-bs-placement="right">
                                 <svg width="20" class="icon-20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <!-- Icon SVG -->
                                 </svg>
                             </i>
-                            <span class="item-name">Dashboard</span>
+                            <span class="item-name">dosen.Dashboard</span>
                         </a>
                     </li>
                     
                     <li class="nav-item {{ request()->routeIs('tugas') ? 'active' : '' }}">
                         <a class="nav-link" aria-current="page" href="{{ route('tugas') }}">
-                            <i class="icon" data-bs-toggle="tooltip" title="Dashboard" data-bs-placement="right">
+                            <i class="icon" data-bs-toggle="tooltip" title="doosen.Dashboard" data-bs-placement="right">
                                 <svg width="20" class="icon-20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <!-- Icon SVG -->
                                 </svg>

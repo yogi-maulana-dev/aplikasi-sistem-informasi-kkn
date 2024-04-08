@@ -74,8 +74,8 @@
                                 </li> --}}
 
                                 <!-- Jika halaman saat ini adalah halaman 'dashboard' -->
-                                <li class="nav-item {{ request()->is('dashboard') ? 'active' : '' }}">
-                                    <a class="nav-link menu-arrow justify-content-start" href="{{ route('dashboard') }}"
+                                <li class="nav-item {{ request()->is('dosen.home') ? 'active' : '' }}">
+                                    <a class="nav-link menu-arrow justify-content-start" href="{{ route('dosen.home') }}"
                                         role="button" aria-controls="homeData">
                                         <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="currentColor"
                                             xmlns="http://www.w3.org/2000/svg">
@@ -86,8 +86,8 @@
                                         <span class="nav-text ms-2">Dashboard</span>
                                     </a>
 
-                                <li class="nav-item {{ request()->is('tugas') ? 'active' : '' }}">
-                                    <a class="nav-link menu-arrow justify-content-start" href="{{ route('tugas') }}"
+                                <li class="nav-item {{ request()->is('dosen.kegiatan') ? 'active' : '' }}">
+                                    <a class="nav-link menu-arrow justify-content-start" href="{{ route('dosen.kegiatan') }}"
                                         role="button" aria-controls="homeData">
                                         <svg class="icon-20" width="20" viewBox="0 0 24 24" fill="currentColor"
                                             xmlns="http://www.w3.org/2000/svg">
@@ -213,7 +213,7 @@
                                     <hr class="dropdown-divider">
                                 </li>
                                 <li>
-                                    <form action="{{ route('logout') }}" method="post">
+                                    <form action="{{ route('dosen.logout') }}" method="post">
                                         {{ csrf_field() }}
                                         <button type="submit" class="dropdown-item">
                                             <i class="fa fa-power-off m-r-5 m-l-5"></i> Keluar
